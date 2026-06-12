@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Menu, X, Info, Users, Newspaper, Calendar } from 'lucide-react'
 
 export function Navbar() {
@@ -14,12 +15,15 @@ export function Navbar() {
     >
       <div className="h-full px-4 flex items-center justify-between">
         {/* Brand */}
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-white font-semibold"
-        >
-          <span className="w-2 h-2 rounded-full bg-[#1e6b3a]" aria-hidden="true" />
-          Signal Caller Summit
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/images/logo.png"
+            alt="Story's Signal Caller Summit"
+            width={56}
+            height={56}
+            className="h-12 w-auto md:h-14"
+            priority
+          />
         </Link>
 
         {/* Desktop nav */}

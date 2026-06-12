@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { Navbar } from '../Navbar'
 
 describe('Navbar', () => {
-  it('renders brand name "Signal Caller Summit"', () => {
+  it('renders logo with alt "Story\'s Signal Caller Summit"', () => {
     render(<Navbar />)
-    expect(screen.getByText('Signal Caller Summit')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: "Story's Signal Caller Summit" })).toBeInTheDocument()
   })
 
   it('renders "Register Now" button/link', () => {
@@ -86,7 +86,7 @@ describe('Navbar', () => {
 
   it('logo/brand name acts as a home link (href="/")', () => {
     render(<Navbar />)
-    const brandLink = screen.getByRole('link', { name: /signal caller summit/i })
+    const brandLink = screen.getByRole('link', { name: /story's signal caller summit/i })
     expect(brandLink).toHaveAttribute('href', '/')
   })
 })
