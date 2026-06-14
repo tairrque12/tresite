@@ -1,10 +1,21 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
-import { ArrowLeft, CreditCard, Banknote } from "lucide-react";
+import { ArrowLeft, CreditCard, Banknote, Loader2 } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
+);
 
 const tiers: Record<string, { name: string; price: number; subtitle: string }> = {
   platinum: { name: "PLATINUM", price: 250, subtitle: "THE MVP SPONSOR" },
@@ -14,6 +25,68 @@ const tiers: Record<string, { name: string; price: number; subtitle: string }> =
   friend: { name: "FRIEND", price: 25, subtitle: "COMMUNITY SUPPORTER" },
 };
 
+function PaymentForm({ tierKey, tierName }: { tierKey: string; tierName: string }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const router = useRouter();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) return;
+
+    setIsProcessing(true);
+    setError(null);
+
+    const { error: submitError } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/sponsors/success?tier=${tierKey}`,
+      },
+    });
+
+    if (submitError) {
+      setError(submitError.message || "Payment failed");
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-8">
+      <div className="bg-[#111] border border-[#1e6b3a]/30 p-6 rounded">
+        <PaymentElement
+          options={{
+            layout: "tabs",
+          }}
+        />
+      </div>
+
+      {error && (
+        <div className="mt-4 p-4 bg-red-900/20 border border-red-500/50 text-red-400 font-body text-sm">
+          {error}
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={!stripe || isProcessing}
+        className="mt-6 w-full bg-[#1e6b3a] hover:bg-[#2d8a4e] disabled:opacity-50 disabled:cursor-not-allowed text-white font-display tracking-wider py-4 transition-colors flex items-center justify-center gap-2"
+      >
+        {isProcessing ? (
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
+            PROCESSING...
+          </>
+        ) : (
+          `PAY NOW`
+        )}
+      </button>
+    </form>
+  );
+}
+
 function CheckoutContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -21,15 +94,34 @@ function CheckoutContent() {
   const tier = tiers[tierKey] || tiers.friend;
 
   const [paymentMethod, setPaymentMethod] = useState<"card" | "cash" | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [isLoadingPayment, setIsLoadingPayment] = useState(false);
 
-  const handleStripeCheckout = () => {
-    setIsProcessing(true);
-    window.location.href = `/api/checkout?tier=${tierKey}`;
+  const handleCardSelection = async () => {
+    setPaymentMethod("card");
+    setIsLoadingPayment(true);
+
+    try {
+      const response = await fetch("/api/sponsor-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier: tierKey }),
+      });
+
+      const data = await response.json();
+      if (data.clientSecret) {
+        setClientSecret(data.clientSecret);
+      }
+    } catch (err) {
+      console.error("Failed to create payment intent:", err);
+    }
+
+    setIsLoadingPayment(false);
   };
 
   const handleCashSelection = () => {
     setPaymentMethod("cash");
+    setClientSecret(null);
   };
 
   return (
@@ -67,29 +159,39 @@ function CheckoutContent() {
 
       <div className="space-y-4">
         <button
-          onClick={handleStripeCheckout}
-          disabled={isProcessing}
-          className="w-full flex items-center gap-4 p-6 border border-[#1e6b3a]/30 hover:border-[#1e6b3a] bg-[#111] hover:bg-[#1a1a1a] transition-all group"
+          onClick={handleCardSelection}
+          disabled={isLoadingPayment}
+          className={`w-full flex items-center gap-4 p-6 border transition-all group ${
+            paymentMethod === "card"
+              ? "border-[#1e6b3a] bg-[#1e6b3a]/10"
+              : "border-[#1e6b3a]/30 hover:border-[#1e6b3a] bg-[#111] hover:bg-[#1a1a1a]"
+          }`}
         >
           <div className="w-12 h-12 bg-[#1e6b3a] flex items-center justify-center">
             <CreditCard className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1 text-left">
             <span className="font-display text-white text-xl block">
-              {isProcessing ? "REDIRECTING..." : "PAY WITH CARD"}
+              {isLoadingPayment ? "LOADING..." : "PAY WITH CARD"}
             </span>
             <span className="font-body text-gray-400 text-sm">
-              Secure checkout via Stripe
+              Card, Apple Pay, Google Pay
             </span>
           </div>
-          <span className="font-display text-[#2d8a4e] text-xl group-hover:translate-x-1 transition-transform">
-            →
-          </span>
+          {paymentMethod !== "card" && (
+            <span className="font-display text-[#2d8a4e] text-xl group-hover:translate-x-1 transition-transform">
+              →
+            </span>
+          )}
         </button>
 
         <button
           onClick={handleCashSelection}
-          className="w-full flex items-center gap-4 p-6 border border-[#1e6b3a]/30 hover:border-[#1e6b3a] bg-[#111] hover:bg-[#1a1a1a] transition-all group"
+          className={`w-full flex items-center gap-4 p-6 border transition-all group ${
+            paymentMethod === "cash"
+              ? "border-[#1e6b3a] bg-[#1e6b3a]/10"
+              : "border-[#1e6b3a]/30 hover:border-[#1e6b3a] bg-[#111] hover:bg-[#1a1a1a]"
+          }`}
         >
           <div className="w-12 h-12 bg-[#1e6b3a] flex items-center justify-center">
             <Banknote className="w-6 h-6 text-white" />
@@ -100,11 +202,42 @@ function CheckoutContent() {
               Cash, check, or card at the event
             </span>
           </div>
-          <span className="font-display text-[#2d8a4e] text-xl group-hover:translate-x-1 transition-transform">
-            →
-          </span>
+          {paymentMethod !== "cash" && (
+            <span className="font-display text-[#2d8a4e] text-xl group-hover:translate-x-1 transition-transform">
+              →
+            </span>
+          )}
         </button>
       </div>
+
+      {paymentMethod === "card" && clientSecret && (
+        <Elements
+          stripe={stripePromise}
+          options={{
+            clientSecret,
+            appearance: {
+              theme: "night",
+              variables: {
+                colorPrimary: "#1e6b3a",
+                colorBackground: "#111",
+                colorText: "#ffffff",
+                colorDanger: "#ef4444",
+                fontFamily: "Inter, system-ui, sans-serif",
+                borderRadius: "0px",
+              },
+            },
+          }}
+        >
+          <PaymentForm tierKey={tierKey} tierName={tier.name} />
+        </Elements>
+      )}
+
+      {paymentMethod === "card" && isLoadingPayment && (
+        <div className="mt-8 flex items-center justify-center gap-2 text-gray-400">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <span className="font-body">Loading payment form...</span>
+        </div>
+      )}
 
       {paymentMethod === "cash" && (
         <div className="mt-8 border border-[#1e6b3a] p-6 bg-[#1e6b3a]/10">
