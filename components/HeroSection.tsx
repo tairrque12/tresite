@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 
@@ -114,36 +113,29 @@ function CountdownTimer() {
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen bg-black flex flex-col">
+    <section className="relative min-h-screen bg-black">
       <div
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/images/IMG_0162.jpeg')" }}
         role="img"
         aria-label="Team group photo background"
-      >
-        <Image
-          src="/images/IMG_0162.jpeg"
-          alt=""
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-transparent" />
-        <div className="absolute inset-0 grain pointer-events-none" />
-      </div>
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40" />
+      <div className="absolute inset-0 grain pointer-events-none" />
 
-      <div className="relative z-10 flex-1 flex flex-col justify-center px-4 md:px-16 pt-20 pb-48">
+      <div className="relative z-10 min-h-screen flex flex-col justify-center pl-8 md:pl-16 pr-4 pt-20 pb-48">
         <AnimatedText delay={0}>
-          <h1
-            className="font-display leading-none tracking-tight"
-            style={{ fontSize: "clamp(80px, 15vw, 180px)" }}
+          <span
+            className="block font-display leading-none tracking-tight text-white"
+            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
           >
-            <span className="block text-white">STORY&apos;S</span>
-          </h1>
+            STORY&apos;S
+          </span>
         </AnimatedText>
         <AnimatedText delay={100}>
           <span
             className="block font-display leading-none tracking-tight text-[#1e6b3a]"
-            style={{ fontSize: "clamp(80px, 15vw, 180px)" }}
+            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
           >
             SIGNAL
           </span>
@@ -151,7 +143,7 @@ export function HeroSection() {
         <AnimatedText delay={200}>
           <span
             className="block font-display leading-none tracking-tight text-white"
-            style={{ fontSize: "clamp(80px, 15vw, 180px)" }}
+            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
           >
             CALLER
           </span>
@@ -159,7 +151,7 @@ export function HeroSection() {
         <AnimatedText delay={300}>
           <span
             className="block font-display leading-none tracking-tight text-stroke"
-            style={{ fontSize: "clamp(80px, 15vw, 180px)" }}
+            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
           >
             SUMMIT
           </span>
@@ -167,7 +159,7 @@ export function HeroSection() {
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 z-10">
-        <div className="px-4 md:px-16 pb-4">
+        <div className="px-8 md:px-16 pb-4">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <CountdownTimer />
             <span className="font-display text-xs tracking-widest text-gray-500">
@@ -180,7 +172,7 @@ export function HeroSection() {
           data-testid="info-strip"
           className="bg-[#1e6b3a]/90 backdrop-blur-sm"
         >
-          <div className="px-4 md:px-16 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="px-8 md:px-16 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center divide-x divide-white/30">
               <span className="pr-4 font-display text-white tracking-widest text-sm">
                 JULY 18, 2026
