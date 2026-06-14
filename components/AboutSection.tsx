@@ -117,11 +117,11 @@ export function AboutSection() {
 
       <div className="px-4 md:px-16 py-16 md:py-24">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[40%_60%] gap-12 md:gap-16">
-          <div>
+          <div className="overflow-visible pr-2">
             <AnimatedText delay={0}>
               <span
                 className="block font-display text-[#1e6b3a] leading-none"
-                style={{ fontSize: "clamp(120px, 20vw, 280px)" }}
+                style={{ fontSize: "clamp(100px, 17vw, 240px)" }}
               >
                 TRE
               </span>
@@ -129,7 +129,7 @@ export function AboutSection() {
             <AnimatedText delay={100}>
               <span
                 className="block font-display text-stroke leading-none"
-                style={{ fontSize: "clamp(120px, 20vw, 280px)" }}
+                style={{ fontSize: "clamp(100px, 17vw, 240px)" }}
               >
                 STORY
               </span>
