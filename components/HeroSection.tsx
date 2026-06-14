@@ -72,9 +72,13 @@ function AnimatedElement({ children, delay, className = "" }: AnimatedElementPro
 }
 
 function CountdownTimer() {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft);
+  const [mounted, setMounted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
+    setMounted(true);
+    setTimeLeft(calculateTimeLeft());
+
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
@@ -100,7 +104,7 @@ function CountdownTimer() {
           className="flex flex-col items-center bg-[#111] border border-[#1e6b3a] rounded-lg px-4 py-3"
         >
           <span className="text-white font-bold text-2xl">
-            {String(box.value).padStart(2, "0")}
+            {mounted ? String(box.value).padStart(2, "0") : "--"}
           </span>
           <span className="text-xs text-gray-400">{box.label}</span>
         </div>
