@@ -72,11 +72,9 @@ interface SponsorFormData {
 }
 
 function SponsorForm({
-  tierKey,
   tier,
   onFormComplete,
 }: {
-  tierKey: string;
   tier: TierConfig;
   onFormComplete: (data: SponsorFormData) => void;
 }) {
@@ -118,7 +116,6 @@ function SponsorForm({
       <h3 className="font-display text-white text-xl mb-4">SPONSOR INFORMATION</h3>
       {tier.fields.map((field) => {
         const config = fieldLabels[field];
-        const isOptional = field === "website" || field === "logoNote";
         return (
           <div key={field}>
             <label className="font-body text-xs text-gray-400 uppercase tracking-widest mb-1 block">
@@ -384,7 +381,6 @@ function CheckoutContent() {
       {/* Sponsor Form - shows after selecting payment method, before payment */}
       {paymentMethod && !showPaymentForm && (
         <SponsorForm
-          tierKey={tierKey}
           tier={tier}
           onFormComplete={handleFormComplete}
         />
