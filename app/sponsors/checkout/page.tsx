@@ -4,7 +4,7 @@ import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
-import { ArrowLeft, CreditCard, Banknote, Loader2 } from "lucide-react";
+import { ArrowLeft, CreditCard, Banknote, Loader2, Phone } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -17,15 +17,145 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
 );
 
-const tiers: Record<string, { name: string; price: number; subtitle: string }> = {
-  platinum: { name: "PLATINUM", price: 250, subtitle: "THE MVP SPONSOR" },
-  gold: { name: "GOLD", price: 150, subtitle: "THE LEADERSHIP SPONSOR" },
-  silver: { name: "SILVER", price: 100, subtitle: "THE TEAM BUILDER SPONSOR" },
-  bronze: { name: "BRONZE", price: 50, subtitle: "THE FUTURE SPONSOR" },
-  friend: { name: "FRIEND", price: 25, subtitle: "COMMUNITY SUPPORTER" },
+interface TierConfig {
+  name: string;
+  price: number;
+  subtitle: string;
+  fields: string[];
+}
+
+const tiers: Record<string, TierConfig> = {
+  platinum: {
+    name: "PLATINUM",
+    price: 250,
+    subtitle: "THE MVP SPONSOR",
+    fields: ["businessName", "contactName", "email", "phone", "website", "logoNote"],
+  },
+  gold: {
+    name: "GOLD",
+    price: 150,
+    subtitle: "THE LEADERSHIP SPONSOR",
+    fields: ["businessName", "contactName", "email", "phone", "website"],
+  },
+  silver: {
+    name: "SILVER",
+    price: 100,
+    subtitle: "THE TEAM BUILDER SPONSOR",
+    fields: ["businessName", "contactName", "email", "phone"],
+  },
+  bronze: {
+    name: "BRONZE",
+    price: 50,
+    subtitle: "THE FUTURE SPONSOR",
+    fields: ["name", "email", "phone"],
+  },
+  friend: {
+    name: "FRIEND",
+    price: 25,
+    subtitle: "COMMUNITY SUPPORTER",
+    fields: ["name", "email"],
+  },
 };
 
-function PaymentForm({ tierKey }: { tierKey: string }) {
+const fieldLabels: Record<string, { label: string; type: string; placeholder: string }> = {
+  businessName: { label: "Business Name", type: "text", placeholder: "Your Business Name" },
+  contactName: { label: "Contact Name", type: "text", placeholder: "Your Full Name" },
+  name: { label: "Your Name", type: "text", placeholder: "Your Full Name" },
+  email: { label: "Email Address", type: "email", placeholder: "you@example.com" },
+  phone: { label: "Phone Number", type: "tel", placeholder: "(555) 555-5555" },
+  website: { label: "Website (optional)", type: "url", placeholder: "https://yourbusiness.com" },
+  logoNote: { label: "Logo Notes (optional)", type: "text", placeholder: "Any notes about your logo submission" },
+};
+
+interface SponsorFormData {
+  [key: string]: string;
+}
+
+function SponsorForm({
+  tierKey,
+  tier,
+  onFormComplete,
+}: {
+  tierKey: string;
+  tier: TierConfig;
+  onFormComplete: (data: SponsorFormData) => void;
+}) {
+  const [formData, setFormData] = useState<SponsorFormData>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newErrors: Record<string, string> = {};
+
+    tier.fields.forEach((field) => {
+      const isOptional = field === "website" || field === "logoNote";
+      if (!isOptional && !formData[field]?.trim()) {
+        newErrors[field] = "This field is required";
+      }
+    });
+
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    onFormComplete(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+      <h3 className="font-display text-white text-xl mb-4">SPONSOR INFORMATION</h3>
+      {tier.fields.map((field) => {
+        const config = fieldLabels[field];
+        const isOptional = field === "website" || field === "logoNote";
+        return (
+          <div key={field}>
+            <label className="font-body text-xs text-gray-400 uppercase tracking-widest mb-1 block">
+              {config.label}
+            </label>
+            <input
+              type={config.type}
+              value={formData[field] || ""}
+              onChange={(e) => handleChange(field, e.target.value)}
+              placeholder={config.placeholder}
+              className={`w-full bg-[#111] border ${
+                errors[field] ? "border-red-500" : "border-[#1e6b3a]/30"
+              } focus:border-[#2d8a4e] focus:outline-none text-white px-4 py-3`}
+            />
+            {errors[field] && (
+              <p className="text-red-400 text-xs mt-1">{errors[field]}</p>
+            )}
+          </div>
+        );
+      })}
+      <button
+        type="submit"
+        className="w-full bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display tracking-wider py-4 transition-colors mt-6"
+      >
+        CONTINUE TO PAYMENT →
+      </button>
+    </form>
+  );
+}
+
+function PaymentForm({
+  tierKey,
+  formData,
+}: {
+  tierKey: string;
+  formData: SponsorFormData;
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -38,6 +168,21 @@ function PaymentForm({ tierKey }: { tierKey: string }) {
 
     setIsProcessing(true);
     setError(null);
+
+    // Send sponsor info to Tre before processing payment
+    try {
+      await fetch("/api/sponsor-notification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tier: tierKey,
+          paymentMethod: "card",
+          ...formData,
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to send notification:", err);
+    }
 
     const { error: submitError } = await stripe.confirmPayment({
       elements,
@@ -54,7 +199,8 @@ function PaymentForm({ tierKey }: { tierKey: string }) {
 
   return (
     <form onSubmit={handleSubmit} className="mt-8">
-      <div className="bg-[#111] border border-[#1e6b3a]/30 p-6 rounded">
+      <h3 className="font-display text-white text-xl mb-4">PAYMENT DETAILS</h3>
+      <div className="bg-[#111] border border-[#1e6b3a]/30 p-6">
         <PaymentElement
           options={{
             layout: "tabs",
@@ -95,32 +241,61 @@ function CheckoutContent() {
   const [paymentMethod, setPaymentMethod] = useState<"card" | "cash" | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
+  const [formData, setFormData] = useState<SponsorFormData | null>(null);
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
 
-  const handleCardSelection = async () => {
+  const handleCardSelection = () => {
     setPaymentMethod("card");
-    setIsLoadingPayment(true);
-
-    try {
-      const response = await fetch("/api/sponsor-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: tierKey }),
-      });
-
-      const data = await response.json();
-      if (data.clientSecret) {
-        setClientSecret(data.clientSecret);
-      }
-    } catch (err) {
-      console.error("Failed to create payment intent:", err);
-    }
-
-    setIsLoadingPayment(false);
+    setClientSecret(null);
+    setFormData(null);
+    setShowPaymentForm(false);
   };
 
   const handleCashSelection = () => {
     setPaymentMethod("cash");
     setClientSecret(null);
+    setFormData(null);
+    setShowPaymentForm(false);
+  };
+
+  const handleFormComplete = async (data: SponsorFormData) => {
+    setFormData(data);
+
+    if (paymentMethod === "card") {
+      setIsLoadingPayment(true);
+      try {
+        const response = await fetch("/api/sponsor-payment-intent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tier: tierKey }),
+        });
+
+        const result = await response.json();
+        if (result.clientSecret) {
+          setClientSecret(result.clientSecret);
+          setShowPaymentForm(true);
+        }
+      } catch (err) {
+        console.error("Failed to create payment intent:", err);
+      }
+      setIsLoadingPayment(false);
+    } else if (paymentMethod === "cash") {
+      // Send notification to Tre for cash payment
+      try {
+        await fetch("/api/sponsor-notification", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tier: tierKey,
+            paymentMethod: "cash (in-person)",
+            ...data,
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to send notification:", err);
+      }
+      setShowPaymentForm(true);
+    }
   };
 
   return (
@@ -159,7 +334,6 @@ function CheckoutContent() {
       <div className="space-y-4">
         <button
           onClick={handleCardSelection}
-          disabled={isLoadingPayment}
           className={`w-full flex items-center gap-4 p-6 border transition-all group ${
             paymentMethod === "card"
               ? "border-[#1e6b3a] bg-[#1e6b3a]/10"
@@ -170,9 +344,7 @@ function CheckoutContent() {
             <CreditCard className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1 text-left">
-            <span className="font-display text-white text-xl block">
-              {isLoadingPayment ? "LOADING..." : "PAY WITH CARD"}
-            </span>
+            <span className="font-display text-white text-xl block">PAY WITH CARD</span>
             <span className="font-body text-gray-400 text-sm">
               Card, Apple Pay, Google Pay
             </span>
@@ -209,7 +381,25 @@ function CheckoutContent() {
         </button>
       </div>
 
-      {paymentMethod === "card" && clientSecret && (
+      {/* Sponsor Form - shows after selecting payment method, before payment */}
+      {paymentMethod && !showPaymentForm && (
+        <SponsorForm
+          tierKey={tierKey}
+          tier={tier}
+          onFormComplete={handleFormComplete}
+        />
+      )}
+
+      {/* Loading state while creating payment intent */}
+      {paymentMethod === "card" && isLoadingPayment && (
+        <div className="mt-8 flex items-center justify-center gap-2 text-gray-400">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <span className="font-body">Loading payment form...</span>
+        </div>
+      )}
+
+      {/* Card Payment Form */}
+      {paymentMethod === "card" && showPaymentForm && clientSecret && formData && (
         <Elements
           stripe={stripePromise}
           options={{
@@ -227,33 +417,27 @@ function CheckoutContent() {
             },
           }}
         >
-          <PaymentForm tierKey={tierKey} />
+          <PaymentForm tierKey={tierKey} formData={formData} />
         </Elements>
       )}
 
-      {paymentMethod === "card" && isLoadingPayment && (
-        <div className="mt-8 flex items-center justify-center gap-2 text-gray-400">
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span className="font-body">Loading payment form...</span>
-        </div>
-      )}
-
-      {paymentMethod === "cash" && (
+      {/* Cash Payment Confirmation */}
+      {paymentMethod === "cash" && showPaymentForm && formData && (
         <div className="mt-8 border border-[#1e6b3a] p-6 bg-[#1e6b3a]/10">
-          <h3 className="font-display text-white text-xl mb-4">PAY IN PERSON</h3>
+          <h3 className="font-display text-white text-xl mb-4">INFORMATION SUBMITTED!</h3>
           <p className="font-body text-gray-300 mb-4">
-            Contact Tre directly to arrange payment:
+            Tre has been notified of your sponsorship interest. Reach out to him directly to arrange payment:
           </p>
-          <div className="space-y-2 mb-6">
-            <p className="font-body text-white">
-              <strong>Email:</strong>{" "}
+          <div className="space-y-3 mb-6">
+            <div className="flex items-center gap-3">
+              <Phone className="w-5 h-5 text-[#2d8a4e]" />
               <a
-                href="mailto:cliffstoryiii@gmail.com"
-                className="text-[#2d8a4e] hover:underline"
+                href="tel:706-330-4198"
+                className="font-display text-white text-xl hover:text-[#2d8a4e] transition-colors"
               >
-                cliffstoryiii@gmail.com
+                (706) 330-4198
               </a>
-            </p>
+            </div>
             <p className="font-body text-white">
               <strong>Amount:</strong> ${tier.price}.00
             </p>
