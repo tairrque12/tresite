@@ -3,6 +3,10 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import RegisterPage from "../page";
 
+vi.mock("canvas-confetti", () => ({
+  default: vi.fn(),
+}));
+
 vi.mock("@stripe/stripe-js", () => ({
   loadStripe: vi.fn(() =>
     Promise.resolve({
@@ -262,20 +266,52 @@ describe("RegisterPage - Step 4: Payment", () => {
     expect(screen.getByText(/July 18, 2026/)).toBeInTheDocument();
   });
 
-  it("Stripe card element container renders", async () => {
+  it("Stripe card element container renders after selecting card payment", async () => {
     await goToStep4();
-    expect(screen.getByTestId("stripe-card-element")).toBeInTheDocument();
+    const user = userEvent.setup();
+
+    const cardButton = screen.getByTestId("payment-method-card");
+    await user.click(cardButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("stripe-card-element")).toBeInTheDocument();
+    });
   });
 
   it('success screen renders "YOU\'RE REGISTERED!" after mock successful payment', async () => {
     await goToStep4();
     const user = userEvent.setup();
 
+    const cardButton = screen.getByTestId("payment-method-card");
+    await user.click(cardButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("stripe-card-element")).toBeInTheDocument();
+    });
+
     const payButton = screen.getByRole("button", { name: /pay \$50/i });
     await user.click(payButton);
 
     await waitFor(() => {
       expect(screen.getByText("YOU'RE REGISTERED!")).toBeInTheDocument();
+    });
+  });
+
+  it("renders payment method options (card and cash)", async () => {
+    await goToStep4();
+    expect(screen.getByTestId("payment-method-card")).toBeInTheDocument();
+    expect(screen.getByTestId("payment-method-cash")).toBeInTheDocument();
+  });
+
+  it("cash payment option shows complete registration button", async () => {
+    await goToStep4();
+    const user = userEvent.setup();
+
+    const cashButton = screen.getByTestId("payment-method-cash");
+    await user.click(cashButton);
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /complete registration/i })).toBeInTheDocument();
     });
   });
 });

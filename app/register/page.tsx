@@ -555,10 +555,12 @@ function PaymentForm({
   athleteData,
   onSuccess,
   onBack,
+  paymentMethod,
 }: {
   athleteData: AthleteData;
-  onSuccess: () => void;
+  onSuccess: (method: "card" | "cash") => void;
   onBack: () => void;
+  paymentMethod: "card" | "cash";
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -596,7 +598,7 @@ function PaymentForm({
       if (stripeError) {
         setError(stripeError.message || "Payment failed");
       } else if (paymentIntent?.status === "succeeded") {
-        onSuccess();
+        onSuccess("card");
       }
     } catch {
       setError("Payment failed. Please try again.");
@@ -607,37 +609,6 @@ function PaymentForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <span className="font-display text-[#2d8a4e] text-xs tracking-widest">
-          STEP 4 OF 4
-        </span>
-        <h1 className="font-display text-4xl text-white mt-1">PAYMENT</h1>
-      </div>
-
-      <div className="bg-[#111] border border-[#1e6b3a]/30 p-6 space-y-3">
-        <h2 className="font-display text-xl text-white tracking-wider">
-          ORDER SUMMARY
-        </h2>
-        <div className="border-t border-[#1e6b3a]/20 pt-3 space-y-2">
-          <p className="font-body text-gray-300">
-            Story&apos;s Signal Caller Summit
-          </p>
-          <p className="font-body text-gray-500 text-sm">
-            July 18, 2026 · Lanett, AL
-          </p>
-          <p className="font-body text-gray-400 text-sm">
-            Athlete: {athleteData.firstName} {athleteData.lastName}
-          </p>
-          <p className="font-body text-gray-400 text-sm">
-            Position: {athleteData.position === "QB" ? "Quarterback" : "Wide Receiver"}
-          </p>
-        </div>
-        <div className="border-t border-[#1e6b3a]/20 pt-3 flex justify-between">
-          <span className="font-display text-white tracking-wider">TOTAL</span>
-          <span className="font-display text-2xl text-[#2d8a4e]">$50.00</span>
-        </div>
-      </div>
-
       <div>
         <label className={labelStyles}>Card Details</label>
         <div className={`${inputStyles} py-4`}>
@@ -685,21 +656,151 @@ function Step4Payment({
   onBack,
 }: {
   athleteData: AthleteData;
-  onSuccess: () => void;
+  onSuccess: (method: "card" | "cash") => void;
   onBack: () => void;
 }) {
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "cash" | null>(null);
+
+  const handleCashPayment = () => {
+    onSuccess("cash");
+  };
+
   return (
-    <Elements stripe={stripePromise}>
-      <PaymentForm
-        athleteData={athleteData}
-        onSuccess={onSuccess}
-        onBack={onBack}
-      />
-    </Elements>
+    <div className="space-y-6">
+      <div>
+        <span className="font-display text-[#2d8a4e] text-xs tracking-widest">
+          STEP 4 OF 4
+        </span>
+        <h1 className="font-display text-4xl text-white mt-1">PAYMENT</h1>
+      </div>
+
+      <div className="bg-[#111] border border-[#1e6b3a]/30 p-6 space-y-3">
+        <h2 className="font-display text-xl text-white tracking-wider">
+          ORDER SUMMARY
+        </h2>
+        <div className="border-t border-[#1e6b3a]/20 pt-3 space-y-2">
+          <p className="font-body text-gray-300">
+            Story&apos;s Signal Caller Summit
+          </p>
+          <p className="font-body text-gray-500 text-sm">
+            July 18, 2026 · Lanett, AL
+          </p>
+          <p className="font-body text-gray-400 text-sm">
+            Athlete: {athleteData.firstName} {athleteData.lastName}
+          </p>
+          <p className="font-body text-gray-400 text-sm">
+            Position: {athleteData.position === "QB" ? "Quarterback" : "Wide Receiver"}
+          </p>
+        </div>
+        <div className="border-t border-[#1e6b3a]/20 pt-3 flex justify-between">
+          <span className="font-display text-white tracking-wider">TOTAL</span>
+          <span className="font-display text-2xl text-[#2d8a4e]">$50.00</span>
+        </div>
+      </div>
+
+      <div>
+        <label className={labelStyles}>Payment Method</label>
+        <div className="grid grid-cols-2 gap-4 mt-2">
+          <button
+            type="button"
+            onClick={() => setPaymentMethod("card")}
+            data-testid="payment-method-card"
+            className={`p-4 border text-left transition-colors ${
+              paymentMethod === "card"
+                ? "border-[#1e6b3a] bg-[#1e6b3a]/10"
+                : "border-[#1e6b3a]/30 hover:border-[#1e6b3a]/60"
+            }`}
+          >
+            <span className="font-display text-white text-lg block mb-1">
+              PAY NOW
+            </span>
+            <span className="font-body text-gray-400 text-xs">
+              Credit / Debit Card
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setPaymentMethod("cash")}
+            data-testid="payment-method-cash"
+            className={`p-4 border text-left transition-colors ${
+              paymentMethod === "cash"
+                ? "border-[#1e6b3a] bg-[#1e6b3a]/10"
+                : "border-[#1e6b3a]/30 hover:border-[#1e6b3a]/60"
+            }`}
+          >
+            <span className="font-display text-white text-lg block mb-1">
+              PAY IN PERSON
+            </span>
+            <span className="font-body text-gray-400 text-xs">
+              Cash at check-in
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {paymentMethod === "card" && (
+        <Elements stripe={stripePromise}>
+          <PaymentForm
+            athleteData={athleteData}
+            onSuccess={onSuccess}
+            onBack={onBack}
+            paymentMethod={paymentMethod}
+          />
+        </Elements>
+      )}
+
+      {paymentMethod === "cash" && (
+        <div className="space-y-6">
+          <div className="bg-[#111] border border-[#1e6b3a]/30 p-4">
+            <p className="font-body text-gray-300 text-sm">
+              By selecting &quot;Pay in Person,&quot; you agree to pay{" "}
+              <span className="text-[#2d8a4e] font-semibold">$50.00 cash</span>{" "}
+              at check-in on July 18, 2026. Your registration will be held but
+              not confirmed until payment is received.
+            </p>
+          </div>
+
+          <div className="pt-4 flex justify-between items-center">
+            <button
+              type="button"
+              onClick={onBack}
+              className="text-gray-500 hover:text-white text-sm font-body transition-colors"
+            >
+              ← BACK
+            </button>
+            <button
+              type="button"
+              onClick={handleCashPayment}
+              className="bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display tracking-wider px-8 py-3 transition-colors"
+            >
+              COMPLETE REGISTRATION →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {!paymentMethod && (
+        <div className="pt-4">
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-gray-500 hover:text-white text-sm font-body transition-colors"
+          >
+            ← BACK
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
-function SuccessScreen({ athleteName }: { athleteName: string }) {
+function SuccessScreen({
+  athleteName,
+  paymentMethod,
+}: {
+  athleteName: string;
+  paymentMethod: "card" | "cash";
+}) {
   useEffect(() => {
     confetti({
       particleCount: 100,
@@ -716,9 +817,23 @@ function SuccessScreen({ athleteName }: { athleteName: string }) {
       </div>
       <h1 className="font-display text-5xl text-white">YOU&apos;RE REGISTERED!</h1>
       <p className="font-body text-gray-400 text-lg">{athleteName}</p>
-      <p className="font-body text-gray-300 max-w-md mx-auto">
-        See you July 18th at Story Field. Check your phone for updates.
-      </p>
+      {paymentMethod === "card" ? (
+        <p className="font-body text-gray-300 max-w-md mx-auto">
+          Payment confirmed. See you July 18th at Story Field. Check your phone
+          for updates.
+        </p>
+      ) : (
+        <div className="max-w-md mx-auto space-y-3">
+          <p className="font-body text-gray-300">
+            Your spot is reserved. Please bring{" "}
+            <span className="text-[#2d8a4e] font-semibold">$50.00 cash</span> to
+            check-in on July 18th.
+          </p>
+          <p className="font-body text-gray-500 text-sm">
+            Check your phone for updates and arrival instructions.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -727,6 +842,7 @@ export default function RegisterPage() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<Partial<FormData>>({});
   const [isSuccess, setIsSuccess] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "cash">("card");
 
   const handleStep1 = (data: AthleteData) => {
     setFormData((prev) => ({ ...prev, athlete: data }));
@@ -743,7 +859,8 @@ export default function RegisterPage() {
     setStep(4);
   };
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = (method: "card" | "cash") => {
+    setPaymentMethod(method);
     setIsSuccess(true);
   };
 
@@ -756,6 +873,7 @@ export default function RegisterPage() {
         {isSuccess ? (
           <SuccessScreen
             athleteName={`${formData.athlete?.firstName} ${formData.athlete?.lastName}`}
+            paymentMethod={paymentMethod}
           />
         ) : (
           <>
