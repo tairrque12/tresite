@@ -98,7 +98,7 @@ export function AboutSection() {
     <section id="about" className="bg-black">
       <AnimatedImage className="relative w-full">
         <img
-          src="/images/tre by himself.jpeg"
+          src="/images/tre by himself .jpeg"
           alt="Tre Story on the field"
           className="w-full object-cover object-top"
           style={{ maxHeight: "600px" }}

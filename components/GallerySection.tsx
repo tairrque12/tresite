@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const photos = [
   {
-    src: "/images/tre by himself.jpeg",
+    src: "/images/tre by himself .jpeg",
     alt: "Tre Story coaching on the field",
     span: "col-span-1",
   },
