@@ -39,10 +39,10 @@ export function Navbar() {
             SPONSORS
           </Link>
           <Link
-            href="/#updates"
+            href="/gallery"
             className="font-display text-[16px] tracking-widest text-gray-400 hover:text-white transition-colors"
           >
-            UPDATES
+            GALLERY
           </Link>
           <Link
             href="/register"
@@ -94,12 +94,12 @@ export function Navbar() {
               SPONSORS
             </Link>
             <Link
-              href="/#updates"
-              data-testid="mobile-updates"
+              href="/gallery"
+              data-testid="mobile-gallery"
               className="font-display text-[48px] text-white tracking-wider hover:text-[#1e6b3a] transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
-              UPDATES
+              GALLERY
             </Link>
             <Link
               href="/book"

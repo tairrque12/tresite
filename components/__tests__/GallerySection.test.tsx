@@ -1,21 +1,21 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { GallerySection } from "../GallerySection";
+import GalleryPage from "../../app/gallery/page";
 import { AboutSection } from "../AboutSection";
 
-describe("GallerySection", () => {
+describe("GalleryPage", () => {
   it('renders "FROM THE FIELD" heading', () => {
-    render(<GallerySection />);
+    render(<GalleryPage />);
     expect(screen.getByText("FROM THE FIELD")).toBeInTheDocument();
   });
 
   it('renders "SIGNAL CALLER SUMMIT 2025" subheading', () => {
-    render(<GallerySection />);
+    render(<GalleryPage />);
     expect(screen.getByText("SIGNAL CALLER SUMMIT 2025")).toBeInTheDocument();
   });
 
   it("renders 4 images with correct alt text", () => {
-    render(<GallerySection />);
+    render(<GalleryPage />);
     expect(screen.getByAltText("Tre Story coaching on the field")).toBeInTheDocument();
     expect(screen.getByAltText("Tre Story training with an athlete")).toBeInTheDocument();
     expect(screen.getByAltText("Tre Story with camp participants")).toBeInTheDocument();

@@ -18,11 +18,11 @@ describe("Navbar", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders nav links: About, Sponsors, Updates", () => {
+  it("renders nav links: About, Sponsors, Gallery", () => {
     render(<Navbar />);
     expect(screen.getByRole("link", { name: /about/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /sponsors/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /updates/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /gallery/i })).toBeInTheDocument();
   });
 
   it('"Register Now" has green background styling', () => {
@@ -38,7 +38,7 @@ describe("Navbar", () => {
     expect(screen.getByRole("button", { name: "Open menu" })).toBeInTheDocument();
   });
 
-  it("mobile menu opens when hamburger is clicked — About, Sponsors, Updates, Book Clifford all visible", async () => {
+  it("mobile menu opens when hamburger is clicked — About, Sponsors, Gallery, Book Clifford all visible", async () => {
     const user = userEvent.setup();
     render(<Navbar />);
 
@@ -50,7 +50,7 @@ describe("Navbar", () => {
 
     expect(screen.getByTestId("mobile-about")).toBeInTheDocument();
     expect(screen.getByTestId("mobile-sponsors")).toBeInTheDocument();
-    expect(screen.getByTestId("mobile-updates")).toBeInTheDocument();
+    expect(screen.getByTestId("mobile-gallery")).toBeInTheDocument();
     expect(screen.getByTestId("mobile-book")).toBeInTheDocument();
   });
 

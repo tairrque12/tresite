@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { Navbar } from "@/components/Navbar";
 
 const photos = [
   {
     src: "/images/tre by himself .jpeg",
     alt: "Tre Story coaching on the field",
-    span: "col-span-1",
+    span: "col-span-1 md:col-span-2 row-span-2",
   },
   {
     src: "/images/tre with one guy.jpeg",
@@ -48,33 +49,37 @@ function GalleryImage({ src, alt, span }: { src: string; alt: string; span: stri
   );
 }
 
-export function GallerySection() {
+export default function GalleryPage() {
   return (
-    <section className="bg-black py-16 px-6 md:px-16">
-      <h2
-        className="font-display text-white mb-2"
-        style={{ fontSize: "clamp(36px, 6vw, 72px)" }}
-      >
-        FROM THE FIELD
-      </h2>
-      <span className="font-display text-[#2d8a4e] tracking-widest text-sm block mb-8">
-        SIGNAL CALLER SUMMIT 2025
-      </span>
+    <div className="min-h-screen bg-black">
+      <Navbar />
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-        {photos.map((photo) => (
-          <GalleryImage
-            key={photo.src}
-            src={photo.src}
-            alt={photo.alt}
-            span={photo.span}
-          />
-        ))}
-      </div>
+      <section className="pt-14 py-16 px-6 md:px-16">
+        <h1
+          className="font-display text-white mb-2"
+          style={{ fontSize: "clamp(48px, 8vw, 96px)" }}
+        >
+          FROM THE FIELD
+        </h1>
+        <span className="font-display text-[#2d8a4e] tracking-widest text-sm block mb-8">
+          SIGNAL CALLER SUMMIT 2025
+        </span>
 
-      <p className="font-display text-gray-700 tracking-widest text-xs text-center mt-4">
-        MORE PHOTOS COMING SOON
-      </p>
-    </section>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 auto-rows-[200px] md:auto-rows-[300px]">
+          {photos.map((photo) => (
+            <GalleryImage
+              key={photo.src}
+              src={photo.src}
+              alt={photo.alt}
+              span={photo.span}
+            />
+          ))}
+        </div>
+
+        <p className="font-display text-gray-700 tracking-widest text-xs text-center mt-8">
+          MORE PHOTOS COMING SOON
+        </p>
+      </section>
+    </div>
   );
 }
