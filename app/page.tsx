@@ -4,7 +4,7 @@ import { AboutSection } from "@/components/AboutSection";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-black">
       <Navbar />
       <HeroSection />
       <AboutSection />
