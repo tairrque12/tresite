@@ -13,10 +13,10 @@ describe("AboutSection", () => {
     expect(screen.getByText("TRE")).toBeInTheDocument();
   });
 
-  it('renders "HEAD COACH" heading', () => {
+  it('renders "FOUNDER" heading', () => {
     render(<AboutSection />);
     expect(
-      screen.getByRole("heading", { name: /head coach/i })
+      screen.getByRole("heading", { name: /founder/i })
     ).toBeInTheDocument();
   });
 

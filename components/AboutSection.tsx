@@ -163,7 +163,7 @@ export function AboutSection() {
                 className="font-display text-white leading-none mb-8"
                 style={{ fontSize: "clamp(40px, 6vw, 72px)" }}
               >
-                HEAD COACH
+                FOUNDER
               </h2>
             </AnimatedText>
 
