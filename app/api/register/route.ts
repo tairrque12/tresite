@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 interface RegistrationData {
   athlete: {
@@ -85,8 +87,13 @@ export async function POST(request: Request) {
       </p>
     `;
 
+    if (!resend) {
+      console.warn("RESEND_API_KEY not configured - skipping email");
+      return NextResponse.json({ success: true, emailSkipped: true });
+    }
+
     const { error } = await resend.emails.send({
-      from: "Signal Caller Summit <registrations@${process.env.RESEND_DOMAIN || "resend.dev"}>",
+      from: `Signal Caller Summit <registrations@${process.env.RESEND_DOMAIN || "resend.dev"}>`,
       to: "cliffstoryiii@gmail.com",
       subject: `New Registration: ${athlete.firstName} ${athlete.lastName} (${athlete.position}) - ${payment.status === "paid" ? "PAID" : "CASH PENDING"}`,
       html: emailHtml,

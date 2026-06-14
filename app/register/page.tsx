@@ -40,15 +40,11 @@ const parentSchema = z.object({
   email: z.string().email("Valid email is required"),
   emergencyContactName: z.string().optional(),
   emergencyContactPhone: z.string().optional(),
-  smsConsent: z.literal(true, {
-    errorMap: () => ({ message: "SMS consent is required" }),
-  }),
+  smsConsent: z.literal(true, { message: "SMS consent is required" }),
 });
 
 const waiverSchema = z.object({
-  waiverAccepted: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the waiver" }),
-  }),
+  waiverAccepted: z.literal(true, { message: "You must accept the waiver" }),
   signature: z.string().min(1, "Signature is required"),
 });
 
@@ -552,15 +548,11 @@ This waiver is binding upon my heirs, executors, and administrators.`}
 }
 
 function PaymentForm({
-  athleteData,
   onSuccess,
   onBack,
-  paymentMethod,
 }: {
-  athleteData: AthleteData;
   onSuccess: (method: "card" | "cash") => void;
   onBack: () => void;
-  paymentMethod: "card" | "cash";
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -741,10 +733,8 @@ function Step4Payment({
       {paymentMethod === "card" && (
         <Elements stripe={stripePromise}>
           <PaymentForm
-            athleteData={athleteData}
             onSuccess={onSuccess}
             onBack={onBack}
-            paymentMethod={paymentMethod}
           />
         </Elements>
       )}
