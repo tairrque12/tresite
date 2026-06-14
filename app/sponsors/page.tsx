@@ -236,7 +236,7 @@ function TierCard({
             </div>
 
             <Link
-              href={`/api/checkout?tier=${tier.id}`}
+              href={`/sponsors/checkout?tier=${tier.id}`}
               data-testid={`cta-${tier.id}`}
               className="block w-full mt-6 bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display tracking-wider py-4 text-center transition-colors"
             >
