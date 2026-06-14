@@ -115,13 +115,12 @@ export function HeroSection() {
   return (
     <section className="relative min-h-screen bg-black">
       <div
-        className="absolute inset-0 z-0 bg-[#111] flex items-center justify-center"
+        className="absolute inset-0 z-0 bg-cover bg-center"
         role="img"
         aria-label="Team group photo background"
-      >
-        <span className="font-body text-gray-500 text-sm">IMG_0162.jpeg</span>
-      </div>
-      <div className="absolute inset-0 z-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40" />
+        style={{ backgroundImage: "url('/images/tre with 3 people.jpeg')" }}
+      />
+      <div className="absolute inset-0 z-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
       <div className="absolute inset-0 grain pointer-events-none" />
 
       <div className="relative z-10 min-h-screen flex flex-col justify-center pl-8 md:pl-16 pr-4 pt-20 pb-48">
