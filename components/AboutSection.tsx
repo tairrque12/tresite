@@ -188,12 +188,14 @@ export function AboutSection() {
             </AnimatedText>
 
             <AnimatedText delay={400}>
-              <div className="flex divide-x divide-white/20 mb-10">
-                {stats.map((stat) => (
+              <div className="grid grid-cols-2 md:flex md:divide-x md:divide-white/20 mb-10">
+                {stats.map((stat, index) => (
                   <div
                     key={stat.label}
                     data-testid="stat-card"
-                    className="px-6 first:pl-0 text-center"
+                    className={`text-center py-4 md:py-0 md:px-6 md:first:pl-0 ${
+                      index < 2 ? "border-b border-[#1e6b3a]/30 md:border-b-0" : ""
+                    } ${index % 2 === 0 ? "border-r border-[#1e6b3a]/30 md:border-r-0" : ""}`}
                   >
                     <span className="font-display text-4xl text-white block">
                       {stat.value}
