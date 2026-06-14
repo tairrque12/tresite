@@ -33,7 +33,7 @@ export function Navbar() {
             ABOUT
           </Link>
           <Link
-            href="/#sponsors"
+            href="/sponsors"
             className="font-display text-[16px] tracking-widest text-gray-400 hover:text-white transition-colors"
           >
             SPONSORS
@@ -86,7 +86,7 @@ export function Navbar() {
               ABOUT
             </Link>
             <Link
-              href="/#sponsors"
+              href="/sponsors"
               data-testid="mobile-sponsors"
               className="font-display text-[48px] text-white tracking-wider hover:text-[#1e6b3a] transition-colors"
               onClick={() => setIsMenuOpen(false)}
