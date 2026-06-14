@@ -15,7 +15,7 @@ describe("HeroSection", () => {
   it("renders background image with role img", () => {
     render(<HeroSection />);
     expect(
-      screen.getByRole("img", { name: /team group photo background/i })
+      screen.getByRole("img", { name: /group photo background/i })
     ).toBeInTheDocument();
   });
 

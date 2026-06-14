@@ -5,6 +5,11 @@ import { Navbar } from "@/components/Navbar";
 
 const photos = [
   {
+    src: "/images/group-pic.jpeg",
+    alt: "Signal Caller Summit group photo",
+    span: "col-span-2 md:col-span-3",
+  },
+  {
     src: "/images/tre by himself .jpeg",
     alt: "Tre Story coaching on the field",
     span: "col-span-1 md:col-span-2 row-span-2",
