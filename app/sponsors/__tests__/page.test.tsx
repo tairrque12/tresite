@@ -52,10 +52,10 @@ describe("SponsorsPage", () => {
     expect(screen.getByTestId("cta-friend")).toBeInTheDocument();
   });
 
-  it("Platinum CTA links to /api/checkout?tier=platinum", () => {
+  it("Platinum CTA links to /sponsors/checkout?tier=platinum", () => {
     render(<SponsorsPage />);
     const platinumCta = screen.getByTestId("cta-platinum");
-    expect(platinumCta).toHaveAttribute("href", "/api/checkout?tier=platinum");
+    expect(platinumCta).toHaveAttribute("href", "/sponsors/checkout?tier=platinum");
   });
 
   it('"CURRENT SPONSORS" section renders', () => {
