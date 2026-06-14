@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 
@@ -94,16 +93,25 @@ const bioText = `Story's Signal Caller Summit is a space where young athletes ca
 
 const quoteText = `I take pride in being someone these kids can reach out to — not only as an example, but as a resource they can have for the rest of their lives.`;
 
+function ImagePlaceholder({ name, alt }: { name: string; alt: string }) {
+  return (
+    <div
+      className="w-full h-full bg-[#111] flex items-center justify-center"
+      role="img"
+      aria-label={alt}
+    >
+      <span className="font-body text-gray-500 text-sm text-center px-4">
+        {name}
+      </span>
+    </div>
+  );
+}
+
 export function AboutSection() {
   return (
     <section id="about" className="bg-black">
       <AnimatedImage className="relative w-full h-[40vh] md:h-[60vh]">
-        <Image
-          src="/images/IMG_0128.jpeg"
-          alt="Tre Story on the field"
-          fill
-          className="object-cover object-top"
-        />
+        <ImagePlaceholder name="tre by himself.jpeg" alt="Tre Story on the field" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black" />
       </AnimatedImage>
 
