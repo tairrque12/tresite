@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 
 function useReveal() {
@@ -97,13 +96,11 @@ const quoteText = `I take pride in being someone these kids can reach out to —
 export function AboutSection() {
   return (
     <section id="about" className="bg-black">
-      <AnimatedImage className="relative w-full h-[40vh] md:h-[60vh]">
-        <Image
+      <AnimatedImage className="relative w-full">
+        <img
           src="/images/tre by himself.jpeg"
           alt="Tre Story on the field"
-          width={600}
-          height={700}
-          className="object-cover object-top w-full"
+          className="w-full object-cover object-top"
           style={{ maxHeight: "600px" }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black" />

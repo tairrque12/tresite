@@ -115,7 +115,7 @@ export function HeroSection() {
   return (
     <section className="relative min-h-screen bg-black">
       <div
-        className="absolute inset-0 z-0 bg-cover bg-center"
+        className="absolute inset-0 z-0 bg-cover bg-[center_top] md:bg-center"
         role="img"
         aria-label="Team group photo background"
         style={{ backgroundImage: "url('/images/tre with 3 people.jpeg')" }}

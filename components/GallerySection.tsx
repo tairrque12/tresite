@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 
 const photos = [
@@ -35,11 +34,9 @@ function GalleryImage({ src, alt, span }: { src: string; alt: string; span: stri
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Image
+      <img
         src={src}
         alt={alt}
-        width={600}
-        height={400}
         className="w-full h-full object-cover transition-transform duration-300"
         style={{ transform: isHovered ? "scale(1.02)" : "scale(1)" }}
       />
