@@ -859,8 +859,25 @@ export default function RegisterPage() {
     setStep(4);
   };
 
-  const handlePaymentSuccess = (method: "card" | "cash") => {
+  const handlePaymentSuccess = async (method: "card" | "cash") => {
     setPaymentMethod(method);
+
+    try {
+      await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          payment: {
+            method,
+            status: method === "card" ? "paid" : "pending",
+          },
+        }),
+      });
+    } catch (error) {
+      console.error("Failed to send registration email:", error);
+    }
+
     setIsSuccess(true);
   };
 
