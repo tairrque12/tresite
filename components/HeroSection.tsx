@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 
@@ -22,7 +21,7 @@ function calculateTimeLeft() {
   return { days, hours, minutes, seconds };
 }
 
-function useIntersectionObserver(threshold = 0.1) {
+function useClipReveal() {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -34,7 +33,7 @@ function useIntersectionObserver(threshold = 0.1) {
           observer.disconnect();
         }
       },
-      { threshold }
+      { threshold: 0.1 }
     );
 
     if (ref.current) {
@@ -42,27 +41,27 @@ function useIntersectionObserver(threshold = 0.1) {
     }
 
     return () => observer.disconnect();
-  }, [threshold]);
+  }, []);
 
   return { ref, isVisible };
 }
 
-interface AnimatedElementProps {
+interface AnimatedTextProps {
   children: React.ReactNode;
   delay: number;
   className?: string;
 }
 
-function AnimatedElement({ children, delay, className = "" }: AnimatedElementProps) {
-  const { ref, isVisible } = useIntersectionObserver();
+function AnimatedText({ children, delay, className = "" }: AnimatedTextProps) {
+  const { ref, isVisible } = useClipReveal();
 
   return (
     <div
       ref={ref}
-      className={`transition-all duration-500 ease-out ${className}`}
+      className={`transition-all duration-[800ms] ${className}`}
       style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? "translateY(0)" : "translateY(20px)",
+        clipPath: isVisible ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
+        transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
         transitionDelay: `${delay}ms`,
       }}
     >
@@ -96,17 +95,16 @@ function CountdownTimer() {
   return (
     <div
       data-testid="countdown-timer"
-      className="flex justify-center gap-3 max-w-xs mx-auto"
+      className="flex divide-x divide-white/20"
     >
       {boxes.map((box) => (
-        <div
-          key={box.label}
-          className="flex flex-col items-center bg-[#111] border border-[#1e6b3a] rounded-lg px-4 py-3"
-        >
-          <span className="text-white font-bold text-2xl">
+        <div key={box.label} className="px-4 first:pl-0 text-center">
+          <span className="font-display text-5xl text-white">
             {mounted ? String(box.value).padStart(2, "0") : "--"}
           </span>
-          <span className="text-xs text-gray-400">{box.label}</span>
+          <span className="block font-body text-xs text-gray-400 mt-1">
+            {box.label}
+          </span>
         </div>
       ))}
     </div>
@@ -115,59 +113,87 @@ function CountdownTimer() {
 
 export function HeroSection() {
   return (
-    <section className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center px-4 py-16">
-      <AnimatedElement delay={0} className="mb-6">
-        <Image
-          src="/images/logo.png"
-          alt="Story's Signal Caller Summit"
-          width={160}
-          height={160}
-          className="h-[120px] w-auto md:h-[160px]"
-          priority
-        />
-      </AnimatedElement>
+    <section className="relative min-h-screen bg-black">
+      <div
+        className="absolute inset-0 z-0 bg-[#111] flex items-center justify-center"
+        role="img"
+        aria-label="Team group photo background"
+      >
+        <span className="font-body text-gray-500 text-sm">IMG_0162.jpeg</span>
+      </div>
+      <div className="absolute inset-0 z-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40" />
+      <div className="absolute inset-0 grain pointer-events-none" />
 
-      <AnimatedElement delay={100} className="mb-8">
-        <p className="text-[#2d8a4e] text-sm md:text-base uppercase tracking-widest text-center max-w-xs">
-          Developing Quarterbacks. Building Leaders. Inspiring Excellence.
-        </p>
-      </AnimatedElement>
+      <div className="relative z-10 min-h-screen flex flex-col justify-center pl-8 md:pl-16 pr-4 pt-20 pb-48">
+        <AnimatedText delay={0}>
+          <span
+            className="block font-display leading-none tracking-tight text-white"
+            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
+          >
+            STORY&apos;S
+          </span>
+        </AnimatedText>
+        <AnimatedText delay={100}>
+          <span
+            className="block font-display leading-none tracking-tight text-[#1e6b3a]"
+            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
+          >
+            SIGNAL
+          </span>
+        </AnimatedText>
+        <AnimatedText delay={200}>
+          <span
+            className="block font-display leading-none tracking-tight text-white"
+            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
+          >
+            CALLER
+          </span>
+        </AnimatedText>
+        <AnimatedText delay={300}>
+          <span
+            className="block font-display leading-none tracking-tight text-stroke"
+            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
+          >
+            SUMMIT
+          </span>
+        </AnimatedText>
+      </div>
 
-      <AnimatedElement delay={200} className="text-center mb-8">
-        <h1 className="text-white text-2xl md:text-4xl font-bold mb-2">
-          July 18th, 2026
-        </h1>
-        <p className="text-gray-400 text-sm mb-1">10:00 AM EST</p>
-        <p className="text-gray-300 text-sm mb-1">
-          Story Field at Morgan Washburn Stadium
-        </p>
-        <p className="text-gray-400 text-xs">Lanett, AL</p>
-      </AnimatedElement>
-
-      <AnimatedElement delay={300} className="mb-8">
-        <CountdownTimer />
-      </AnimatedElement>
-
-      <AnimatedElement delay={400} className="flex flex-col md:flex-row gap-4 w-full max-w-xs md:max-w-md mb-8">
-        <Link
-          href="/register"
-          className="min-h-[48px] px-8 bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white rounded-md font-semibold w-full flex items-center justify-center transition-colors"
-        >
-          Register Now
-        </Link>
-        <Link
-          href="#about"
-          className="min-h-[48px] px-8 border border-[#2d8a4e] text-[#2d8a4e] rounded-md font-semibold w-full flex items-center justify-center transition-colors hover:bg-[#2d8a4e]/10"
-        >
-          Learn More
-        </Link>
-      </AnimatedElement>
-
-      <AnimatedElement delay={500}>
-        <div className="border border-gray-700 text-gray-400 text-xs rounded-full px-4 py-2">
-          Partnered with Sweet Feet Academy
+      <div className="absolute bottom-0 left-0 right-0 z-10">
+        <div className="px-8 md:px-16 pb-4">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <CountdownTimer />
+            <span className="font-display text-xs tracking-widest text-gray-500">
+              PARTNERED WITH SWEET FEET ACADEMY
+            </span>
+          </div>
         </div>
-      </AnimatedElement>
+
+        <div
+          data-testid="info-strip"
+          className="bg-[#1e6b3a]/90 backdrop-blur-sm"
+        >
+          <div className="px-8 md:px-16 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center divide-x divide-white/30">
+              <span className="pr-4 font-display text-white tracking-widest text-sm">
+                JULY 18, 2026
+              </span>
+              <span className="px-4 font-display text-white tracking-widest text-sm">
+                10:00 AM EST
+              </span>
+              <span className="pl-4 font-display text-white tracking-widest text-sm">
+                LANETT, AL
+              </span>
+            </div>
+            <Link
+              href="/register"
+              className="bg-white text-black font-display tracking-wider px-6 py-3 hover:bg-gray-200 transition-colors text-center"
+            >
+              REGISTER NOW →
+            </Link>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

@@ -1,10 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 
-function useIntersectionObserver(threshold = 0.1) {
+function useReveal() {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -16,7 +15,7 @@ function useIntersectionObserver(threshold = 0.1) {
           observer.disconnect();
         }
       },
-      { threshold }
+      { threshold: 0.1 }
     );
 
     if (ref.current) {
@@ -24,34 +23,27 @@ function useIntersectionObserver(threshold = 0.1) {
     }
 
     return () => observer.disconnect();
-  }, [threshold]);
+  }, []);
 
   return { ref, isVisible };
 }
 
-interface AnimatedElementProps {
+interface AnimatedTextProps {
   children: React.ReactNode;
   delay: number;
-  direction?: "left" | "right";
   className?: string;
 }
 
-function AnimatedElement({
-  children,
-  delay,
-  direction = "right",
-  className = "",
-}: AnimatedElementProps) {
-  const { ref, isVisible } = useIntersectionObserver();
-  const translateX = direction === "left" ? "-24px" : "24px";
+function AnimatedText({ children, delay, className = "" }: AnimatedTextProps) {
+  const { ref, isVisible } = useReveal();
 
   return (
     <div
       ref={ref}
-      className={`transition-all duration-[600ms] ease-out ${className}`}
+      className={`transition-all duration-[800ms] ${className}`}
       style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? "translateX(0)" : `translateX(${translateX})`,
+        clipPath: isVisible ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
+        transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
         transitionDelay: `${delay}ms`,
       }}
     >
@@ -60,108 +52,169 @@ function AnimatedElement({
   );
 }
 
+interface AnimatedImageProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+function AnimatedImage({ children, className = "" }: AnimatedImageProps) {
+  const { ref, isVisible } = useReveal();
+
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-[800ms] ${className}`}
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "scale(1)" : "scale(1.05)",
+        transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 const credentials = [
-  { emoji: "🎓", text: "Tuskegee University" },
-  { emoji: "📐", text: "Construction Science & Management" },
-  { emoji: "⚙️", text: "Project Engineer · Atlanta, GA" },
-  { emoji: "🏈", text: "Lanett High School Records Holder" },
+  "Tuskegee University",
+  "Construction Science & Management",
+  "Project Engineer · Atlanta, GA",
+  "Lanett HS Records Holder",
 ];
 
 const stats = [
-  { value: "4x", label: "Lanett HS Records" },
-  { value: "D1", label: "Level of Training" },
-  { value: "QB + WR", label: "Positions Coached" },
-  { value: "For Life", label: "Mentor Relationship" },
+  { value: "4x", label: "LANETT HS RECORDS" },
+  { value: "D1", label: "LEVEL OF TRAINING" },
+  { value: "QB + WR", label: "POSITIONS COACHED" },
+  { value: "LIFE", label: "MENTOR RELATIONSHIP" },
 ];
 
-const bioText = `Story's Signal Caller Summit is a space where young athletes can connect with experienced individuals who have played collegiately or professionally — and receive high-level training, develop leadership skills, and learn to read the field of life with wisdom, faith, and boldness. We don't only focus on football. We focus on faith, how we carry ourselves on and off the field, and morale improvement. I do it because people did it for me. I wouldn't be where I am without my mentors pushing me to be better in all aspects. I take pride in being someone these kids can reach out to — not only as an example, but as a resource they can have for the rest of their lives.`;
+const bioText = `Story's Signal Caller Summit is a space where young athletes can connect with experienced individuals who have played collegiately or professionally — and receive high-level training, develop leadership skills, and learn to read the field of life with wisdom, faith, and boldness. We don't only focus on football. We focus on faith, how we carry ourselves on and off the field, and morale improvement. I do it because people did it for me. I wouldn't be where I am without my mentors pushing me to be better in all aspects.`;
+
+const quoteText = `I take pride in being someone these kids can reach out to — not only as an example, but as a resource they can have for the rest of their lives.`;
+
+function ImagePlaceholder({ name, alt }: { name: string; alt: string }) {
+  return (
+    <div
+      className="w-full h-full bg-[#111] flex items-center justify-center"
+      role="img"
+      aria-label={alt}
+    >
+      <span className="font-body text-gray-500 text-sm text-center px-4">
+        {name}
+      </span>
+    </div>
+  );
+}
 
 export function AboutSection() {
   return (
-    <section
-      id="about"
-      className="bg-[#0a0a0a] py-24 md:py-32 px-6 md:px-16"
-    >
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
-        <AnimatedElement delay={0} direction="left" className="order-2 md:order-1">
-          <Image
-            src="/images/IMG_0128.jpeg"
-            alt="Tre Story on the field"
-            width={800}
-            height={600}
-            className="rounded-2xl object-cover w-full max-h-[600px] ring-2 ring-[#1e6b3a]/40"
-          />
-        </AnimatedElement>
+    <section id="about" className="bg-black">
+      <AnimatedImage className="relative w-full h-[40vh] md:h-[60vh]">
+        <ImagePlaceholder name="tre by himself.jpeg" alt="Tre Story on the field" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black" />
+      </AnimatedImage>
 
-        <div className="order-1 md:order-2">
-          <AnimatedElement delay={0}>
-            <p className="text-xs text-[#2d8a4e] uppercase tracking-widest mb-3">
-              Founder & Head Coach
-            </p>
-          </AnimatedElement>
+      <div className="px-4 md:px-16 py-16 md:py-24">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[40%_60%] gap-12 md:gap-16">
+          <div>
+            <AnimatedText delay={0}>
+              <span
+                className="block font-display text-[#1e6b3a] leading-none"
+                style={{ fontSize: "clamp(120px, 20vw, 280px)" }}
+              >
+                TRE
+              </span>
+            </AnimatedText>
+            <AnimatedText delay={100}>
+              <span
+                className="block font-display text-stroke leading-none"
+                style={{ fontSize: "clamp(120px, 20vw, 280px)" }}
+              >
+                STORY
+              </span>
+            </AnimatedText>
 
-          <AnimatedElement delay={50}>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Meet Tre Story
-            </h2>
-          </AnimatedElement>
+            <AnimatedText delay={200}>
+              <div className="w-full h-px bg-[#1e6b3a] my-8" />
+            </AnimatedText>
 
-          <AnimatedElement delay={100}>
-            <div className="flex flex-wrap gap-3 mb-6">
-              {credentials.map((cred) => (
-                <span
-                  key={cred.text}
-                  className="bg-[#111] border border-[#1e6b3a]/30 rounded-full px-4 py-2 text-xs text-gray-300"
-                >
-                  {cred.emoji} {cred.text}
-                </span>
+            <div className="space-y-3">
+              {credentials.map((cred, i) => (
+                <AnimatedText key={cred} delay={300 + i * 100}>
+                  <div className="border-l-2 border-[#1e6b3a] pl-3 py-1">
+                    <span className="font-body text-gray-400 text-xs">
+                      {cred}
+                    </span>
+                  </div>
+                </AnimatedText>
               ))}
             </div>
-          </AnimatedElement>
+          </div>
 
-          <AnimatedElement delay={150}>
-            <p className="text-gray-300 text-base leading-relaxed mb-6">
-              {bioText}
-            </p>
-          </AnimatedElement>
+          <div>
+            <AnimatedText delay={0}>
+              <span className="font-display text-[#2d8a4e] tracking-widest text-sm">
+                FOUNDER &
+              </span>
+            </AnimatedText>
+            <AnimatedText delay={100}>
+              <h2
+                className="font-display text-white leading-none mb-8"
+                style={{ fontSize: "clamp(40px, 6vw, 72px)" }}
+              >
+                HEAD COACH
+              </h2>
+            </AnimatedText>
 
-          <AnimatedElement delay={200}>
-            <blockquote
-              data-testid="quote"
-              className="border-l-4 border-[#2d8a4e] pl-4 mb-8"
-            >
-              <p className="italic text-gray-400 text-sm mb-2">
-                "I take pride in being someone these kids can reach out to — not only as an example, but as a resource they can have for the rest of their lives."
+            <AnimatedText delay={200}>
+              <p className="font-body text-gray-300 text-base leading-relaxed mb-10">
+                {bioText}
               </p>
-              <cite className="text-gray-500 text-xs not-italic">
-                — Clifford "Tre" Story Jr., Founder
-              </cite>
-            </blockquote>
-          </AnimatedElement>
+            </AnimatedText>
 
-          <AnimatedElement delay={250}>
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              {stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  data-testid="stat-card"
-                  className="bg-[#111] border border-[#1e6b3a]/30 rounded-xl p-4 text-center"
-                >
-                  <p className="text-2xl font-bold text-[#2d8a4e]">{stat.value}</p>
-                  <p className="text-xs text-gray-400 mt-1">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          </AnimatedElement>
+            <AnimatedText delay={300}>
+              <div data-testid="quote" className="mb-10">
+                <span className="font-display text-8xl text-[#1e6b3a] leading-none block -mb-6">
+                  &ldquo;
+                </span>
+                <p className="font-body italic text-gray-400 text-base leading-relaxed">
+                  {quoteText}
+                </p>
+                <cite className="font-body text-xs text-gray-600 mt-2 not-italic block">
+                  — Clifford &quot;Tre&quot; Story Jr., Founder
+                </cite>
+              </div>
+            </AnimatedText>
 
-          <AnimatedElement delay={300}>
-            <Link
-              href="/book"
-              className="inline-flex items-center justify-center border border-[#2d8a4e] text-[#2d8a4e] rounded-md hover:bg-[#1e6b3a] hover:text-white transition-colors min-h-[48px] px-8 w-full md:w-auto"
-            >
-              Book a Consultation
-            </Link>
-          </AnimatedElement>
+            <AnimatedText delay={400}>
+              <div className="flex divide-x divide-white/20 mb-10">
+                {stats.map((stat) => (
+                  <div
+                    key={stat.label}
+                    data-testid="stat-card"
+                    className="px-6 first:pl-0 text-center"
+                  >
+                    <span className="font-display text-4xl text-white block">
+                      {stat.value}
+                    </span>
+                    <span className="font-body text-xs text-gray-500 uppercase tracking-widest">
+                      {stat.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </AnimatedText>
+
+            <AnimatedText delay={500}>
+              <Link
+                href="/book"
+                className="inline-block font-display text-[#2d8a4e] tracking-widest hover:text-white transition-colors underline-offset-4 hover:underline"
+              >
+                BOOK A CONSULTATION →
+              </Link>
+            </AnimatedText>
+          </div>
         </div>
       </div>
     </section>

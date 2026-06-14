@@ -1,60 +1,57 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Menu, X, Info, Users, Newspaper, Calendar } from 'lucide-react'
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Menu, X } from "lucide-react";
 
 export function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <nav
       aria-label="Main navigation"
-      className="sticky top-0 z-50 w-full h-14 bg-[#0a0a0a] border-b border-[#1e6b3a]"
+      className="fixed top-0 z-50 w-full h-14 bg-black border-b border-[#1e6b3a]"
     >
-      <div className="h-full px-4 flex items-center justify-between">
-        {/* Brand */}
+      <div className="h-full px-4 md:px-8 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <Image
             src="/images/logo.png"
             alt="Story's Signal Caller Summit"
-            width={56}
-            height={56}
-            className="h-12 w-auto md:h-14"
+            width={44}
+            height={44}
+            className="h-11 w-auto"
             priority
           />
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-8">
           <Link
             href="/#about"
-            className="text-gray-400 hover:text-white transition-colors"
+            className="font-display text-[16px] tracking-widest text-gray-400 hover:text-white transition-colors"
           >
-            About
+            ABOUT
           </Link>
           <Link
             href="/#sponsors"
-            className="text-gray-400 hover:text-white transition-colors"
+            className="font-display text-[16px] tracking-widest text-gray-400 hover:text-white transition-colors"
           >
-            Sponsors
+            SPONSORS
           </Link>
           <Link
             href="/#updates"
-            className="text-gray-400 hover:text-white transition-colors"
+            className="font-display text-[16px] tracking-widest text-gray-400 hover:text-white transition-colors"
           >
-            Updates
+            UPDATES
           </Link>
           <Link
             href="/register"
-            className="bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-medium px-4 py-2 rounded-md min-h-[44px] flex items-center transition-colors"
+            className="bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display text-[16px] tracking-wider px-6 py-2 transition-colors"
           >
-            Register Now
+            REGISTER NOW
           </Link>
         </div>
 
-        {/* Mobile hamburger */}
         <button
           className="md:hidden p-2 text-white"
           aria-label="Open menu"
@@ -64,81 +61,65 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu */}
       {isMenuOpen && (
         <div
           data-testid="mobile-menu"
-          className="md:hidden absolute top-14 left-0 right-0 bg-[#111] border-b border-[#222]"
+          className="md:hidden fixed inset-0 bg-black z-50 flex flex-col"
         >
-          {/* Close button */}
-          <div className="flex justify-end p-2">
+          <div className="flex justify-end p-4">
             <button
               className="p-2 text-white"
               aria-label="Close menu"
               onClick={() => setIsMenuOpen(false)}
             >
-              <X className="w-6 h-6" aria-hidden="true" />
+              <X className="w-8 h-8" aria-hidden="true" />
             </button>
           </div>
 
-          {/* Menu links */}
-          <Link
-            href="/#about"
-            data-testid="mobile-about"
-            className="flex items-center gap-3 px-4 min-h-[48px] text-gray-400 border-b border-[#222]"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <Info className="w-5 h-5 text-[#1e6b3a]" aria-hidden="true" />
-            About
-          </Link>
-          <Link
-            href="/#sponsors"
-            data-testid="mobile-sponsors"
-            className="flex items-center gap-3 px-4 min-h-[48px] text-gray-400 border-b border-[#222]"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <Users className="w-5 h-5 text-[#1e6b3a]" aria-hidden="true" />
-            Sponsors
-          </Link>
-          <Link
-            href="/#updates"
-            data-testid="mobile-updates"
-            className="flex items-center gap-3 px-4 min-h-[48px] text-gray-400 border-b border-[#222]"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <Newspaper className="w-5 h-5 text-[#1e6b3a]" aria-hidden="true" />
-            Updates
-          </Link>
-          <Link
-            href="/book"
-            data-testid="mobile-book"
-            className="flex items-center gap-3 px-4 min-h-[48px] text-gray-400 border-b border-[#222]"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <Calendar className="w-5 h-5 text-[#1e6b3a]" aria-hidden="true" />
-            Book Clifford
-          </Link>
-
-          {/* CTA buttons */}
-          <div className="p-4 flex flex-col gap-3">
+          <div className="flex-1 flex flex-col items-center justify-center gap-8">
             <Link
-              href="/register"
-              data-testid="mobile-register"
-              className="bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-medium px-4 py-3 rounded-md text-center min-h-[44px] flex items-center justify-center transition-colors"
+              href="/#about"
+              data-testid="mobile-about"
+              className="font-display text-[48px] text-white tracking-wider hover:text-[#1e6b3a] transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
-              Register Now
+              ABOUT
+            </Link>
+            <Link
+              href="/#sponsors"
+              data-testid="mobile-sponsors"
+              className="font-display text-[48px] text-white tracking-wider hover:text-[#1e6b3a] transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              SPONSORS
+            </Link>
+            <Link
+              href="/#updates"
+              data-testid="mobile-updates"
+              className="font-display text-[48px] text-white tracking-wider hover:text-[#1e6b3a] transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              UPDATES
             </Link>
             <Link
               href="/book"
-              className="border border-[#1e6b3a] text-[#1e6b3a] hover:bg-[#1e6b3a] hover:text-white font-medium px-4 py-3 rounded-md text-center min-h-[44px] flex items-center justify-center transition-colors"
+              data-testid="mobile-book"
+              className="font-display text-[48px] text-white tracking-wider hover:text-[#1e6b3a] transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
-              Book Clifford
+              BOOK CLIFFORD
+            </Link>
+            <Link
+              href="/register"
+              data-testid="mobile-register"
+              className="mt-8 bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display text-[24px] tracking-wider px-12 py-4 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              REGISTER NOW
             </Link>
           </div>
         </div>
       )}
     </nav>
-  )
+  );
 }
