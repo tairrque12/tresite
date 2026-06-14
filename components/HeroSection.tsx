@@ -115,10 +115,10 @@ export function HeroSection() {
   return (
     <section className="relative min-h-screen bg-black">
       <div
-        className="absolute inset-0 z-0 bg-cover bg-[center_top] md:bg-center"
+        className="absolute inset-0 z-0 bg-cover bg-center"
         role="img"
-        aria-label="Team group photo background"
-        style={{ backgroundImage: "url('/images/tre with 3 people.jpeg')" }}
+        aria-label="Signal Caller Summit logo background"
+        style={{ backgroundImage: "url('/images/logo.png')" }}
       />
       <div className="absolute inset-0 z-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
       <div className="absolute inset-0 grain pointer-events-none" />
