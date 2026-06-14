@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
@@ -25,10 +25,9 @@ const tiers: Record<string, { name: string; price: number; subtitle: string }> =
   friend: { name: "FRIEND", price: 25, subtitle: "COMMUNITY SUPPORTER" },
 };
 
-function PaymentForm({ tierKey, tierName }: { tierKey: string; tierName: string }) {
+function PaymentForm({ tierKey }: { tierKey: string }) {
   const stripe = useStripe();
   const elements = useElements();
-  const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -228,7 +227,7 @@ function CheckoutContent() {
             },
           }}
         >
-          <PaymentForm tierKey={tierKey} tierName={tier.name} />
+          <PaymentForm tierKey={tierKey} />
         </Elements>
       )}
 
