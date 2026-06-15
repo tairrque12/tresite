@@ -198,7 +198,7 @@ export async function POST(request: Request) {
     // Return success even if one email fails (log errors but don't block)
     return NextResponse.json({
       success: true,
-      treEmailSent: !treResult.error,
+      treEmailSent: !cliffordResult.error,
       customerEmailSent: !customerResult.error,
     });
   } catch (error) {
