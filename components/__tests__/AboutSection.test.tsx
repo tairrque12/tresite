@@ -8,9 +8,9 @@ describe("AboutSection", () => {
     expect(document.getElementById("about")).toBeInTheDocument();
   });
 
-  it('renders "TRE" as main display text', () => {
+  it('renders "CLIFFORD" as main display text', () => {
     render(<AboutSection />);
-    expect(screen.getByText("TRE")).toBeInTheDocument();
+    expect(screen.getByText("CLIFFORD")).toBeInTheDocument();
   });
 
   it('renders "FOUNDER" heading', () => {

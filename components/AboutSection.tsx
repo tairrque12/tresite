@@ -112,17 +112,17 @@ export function AboutSection() {
             <AnimatedText delay={0}>
               <span
                 className="block font-display text-[#1e6b3a] leading-none"
-                style={{ fontSize: "clamp(100px, 17vw, 240px)" }}
+                style={{ fontSize: "clamp(60px, 12vw, 180px)" }}
               >
-                TRE
+                CLIFFORD
               </span>
             </AnimatedText>
             <AnimatedText delay={100}>
               <span
                 className="block font-display text-stroke leading-none"
-                style={{ fontSize: "clamp(100px, 17vw, 240px)" }}
+                style={{ fontSize: "clamp(60px, 12vw, 180px)" }}
               >
-                STORY
+                STORY, III
               </span>
             </AnimatedText>
 
