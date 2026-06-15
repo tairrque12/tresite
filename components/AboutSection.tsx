@@ -100,8 +100,8 @@ export function AboutSection() {
         <img
           src="/images/tre by himself .jpeg"
           alt="Tre Story on the field"
-          className="w-full object-cover object-top"
-          style={{ maxHeight: "600px" }}
+          className="w-full object-cover object-top md:object-contain md:bg-black"
+          style={{ maxHeight: "400px", height: "auto" }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black" />
       </AnimatedImage>
