@@ -7,7 +7,7 @@ const photos = [
   {
     src: "/images/group-pic.jpeg",
     alt: "Signal Caller Summit group photo",
-    span: "col-span-2 md:col-span-3",
+    span: "col-span-2 md:col-span-3 lg:col-span-3",
   },
   {
     src: "/images/tre by himself .jpeg",
@@ -29,6 +29,31 @@ const photos = [
     alt: "Tre Story with family",
     span: "col-span-1",
   },
+  {
+    src: "/images/mp1.JPEG",
+    alt: "Signal Caller Summit camp photo",
+    span: "col-span-1",
+  },
+  {
+    src: "/images/mp2.JPEG",
+    alt: "Signal Caller Summit camp photo",
+    span: "col-span-1",
+  },
+  {
+    src: "/images/mp3.jpeg",
+    alt: "Signal Caller Summit camp photo",
+    span: "col-span-1 md:col-span-2",
+  },
+  {
+    src: "/images/mp4.JPEG",
+    alt: "Signal Caller Summit camp photo",
+    span: "col-span-1",
+  },
+  {
+    src: "/images/mp5.JPEG",
+    alt: "Signal Caller Summit camp photo",
+    span: "col-span-1",
+  },
 ];
 
 function GalleryImage({ src, alt, span }: { src: string; alt: string; span: string }) {
@@ -43,7 +68,7 @@ function GalleryImage({ src, alt, span }: { src: string; alt: string; span: stri
       <img
         src={src}
         alt={alt}
-        className="w-full h-full object-cover transition-transform duration-300"
+        className="w-full h-64 md:h-full object-cover transition-transform duration-300"
         style={{ transform: isHovered ? "scale(1.02)" : "scale(1)" }}
       />
       <div
@@ -70,7 +95,7 @@ export default function GalleryPage() {
           SIGNAL CALLER SUMMIT 2025
         </span>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 auto-rows-[200px] md:auto-rows-[300px]">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2 auto-rows-[200px] md:auto-rows-[300px]">
           {photos.map((photo) => (
             <GalleryImage
               key={photo.src}
@@ -80,10 +105,6 @@ export default function GalleryPage() {
             />
           ))}
         </div>
-
-        <p className="font-display text-gray-700 tracking-widest text-xs text-center mt-8">
-          MORE PHOTOS COMING SOON
-        </p>
       </section>
     </div>
   );
