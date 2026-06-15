@@ -16,7 +16,7 @@ const bookingTypeLabels: Record<string, string> = {
 const sessionFormatLabels: Record<string, string> = {
   "in-person": "In-Person — Lanett, AL area",
   virtual: "Virtual — Zoom film review / mechanics breakdown",
-  travel: "Travel — Tre comes to your location",
+  travel: "Travel — Clifford Story, III comes to your location",
 };
 
 const ageRangeLabels: Record<string, string> = {
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
         ? "#ef4444"
         : "#1e6b3a";
 
-    // Email to Tre
+    // Email to Clifford
     const treEmailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: #1e6b3a; padding: 20px; text-align: center;">
@@ -212,7 +212,7 @@ export async function POST(request: Request) {
 
         <div style="padding: 20px; background: #f9f9f9;">
           <p style="font-size: 16px; color: #333;">
-            Tre has received your consultation request and will reach out within 24 hours
+            Clifford Story, III has received your consultation request and will reach out within 24 hours
             to confirm your session and discuss pricing.
           </p>
 
@@ -239,7 +239,7 @@ export async function POST(request: Request) {
           </div>
 
           <p style="font-size: 14px; color: #333;">
-            If you need to reach Tre directly in the meantime, don't hesitate to email him:
+            If you need to reach Clifford Story, III directly in the meantime, don't hesitate to email him:
           </p>
           <p style="font-size: 14px;">
             <a href="mailto:cliffstoryiii@gmail.com" style="color: #1e6b3a;">
@@ -259,8 +259,8 @@ export async function POST(request: Request) {
       </div>
     `;
 
-    // Send email to Tre
-    const { error: treError } = await resend.emails.send({
+    // Send email to Clifford
+    const { error: cliffordError } = await resend.emails.send({
       from: fromEmail,
       to: treEmail,
       subject: `New Consultation Request: ${data.firstName} ${data.lastName} — ${bookingTypeLabel}`,
@@ -268,15 +268,15 @@ export async function POST(request: Request) {
       replyTo: data.email,
     });
 
-    if (treError) {
-      console.error("Error sending to Tre:", treError);
+    if (cliffordError) {
+      console.error("Error sending to Clifford:", cliffordError);
     }
 
     // Send confirmation to submitter
     const { error: confirmError } = await resend.emails.send({
       from: fromEmail,
       to: data.email,
-      subject: "We got your request — Tre will be in touch",
+      subject: "We got your request — Clifford Story, III will be in touch",
       html: confirmationHtml,
     });
 

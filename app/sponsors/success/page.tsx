@@ -81,7 +81,7 @@ function SuccessContent() {
       </p>
 
       <p className="font-body text-gray-400 mb-12">
-        Tre will be in touch within 24 hours.
+        Clifford Story, III will be in touch within 24 hours.
       </p>
 
       {showLogoUpload && !logoUploaded && (

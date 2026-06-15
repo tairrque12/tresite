@@ -283,7 +283,7 @@ function ContactForm() {
       <div className="text-center py-8">
         <p className="font-display text-[#2d8a4e] text-2xl">MESSAGE SENT!</p>
         <p className="font-body text-gray-400 mt-2">
-          Tre will be in touch soon.
+          Clifford Story, III will be in touch soon.
         </p>
       </div>
     );

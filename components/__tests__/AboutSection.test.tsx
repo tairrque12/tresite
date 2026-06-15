@@ -25,10 +25,10 @@ describe("AboutSection", () => {
     expect(screen.getByText(/wisdom, faith, and boldness/i)).toBeInTheDocument();
   });
 
-  it('renders primary photo with alt="Tre Story on the field"', () => {
+  it('renders primary photo with alt="Clifford Story, III on the field"', () => {
     render(<AboutSection />);
     expect(
-      screen.getByRole("img", { name: "Tre Story on the field" })
+      screen.getByRole("img", { name: "Clifford Story, III on the field" })
     ).toBeInTheDocument();
   });
 
@@ -55,10 +55,10 @@ describe("AboutSection", () => {
     expect(bookLink).toHaveAttribute("href", "/book");
   });
 
-  it('renders blockquote with attribution "Clifford \\"Tre\\" Story Jr."', () => {
+  it('renders blockquote with attribution "Clifford Story, III"', () => {
     render(<AboutSection />);
     const quote = screen.getByTestId("quote");
     expect(quote).toBeInTheDocument();
-    expect(screen.getByText(/Clifford "Tre" Story Jr/)).toBeInTheDocument();
+    expect(screen.getByText(/Clifford Story, III/)).toBeInTheDocument();
   });
 });

@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
     const treEmail = process.env.TRE_EMAIL || "cliffstoryiii@gmail.com";
 
-    // Email to Tre (camp owner) with full registration details
+    // Email to Clifford (camp owner) with full registration details
     const treEmailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: #1e6b3a; padding: 20px; text-align: center;">
@@ -169,8 +169,8 @@ export async function POST(request: Request) {
       </div>
     `;
 
-    // Send email to Tre
-    const treResult = await resend.emails.send({
+    // Send email to Clifford
+    const cliffordResult = await resend.emails.send({
       from: fromEmail,
       to: treEmail,
       subject: `New Registration: ${athlete.firstName} ${athlete.lastName} (${athlete.position}) - ${payment.status === "paid" ? "PAID" : "CASH PENDING"}`,
@@ -178,8 +178,8 @@ export async function POST(request: Request) {
       replyTo: parent.email,
     });
 
-    if (treResult.error) {
-      console.error("Error sending email to Tre:", treResult.error);
+    if (cliffordResult.error) {
+      console.error("Error sending email to Clifford:", cliffordResult.error);
     }
 
     // Send confirmation email to parent/customer

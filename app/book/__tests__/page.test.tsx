@@ -72,7 +72,7 @@ describe("BookPage", () => {
     expect(select).toBeInTheDocument();
     expect(screen.getByText("In-Person — Lanett, AL area")).toBeInTheDocument();
     expect(screen.getByText("Virtual — Zoom film review / mechanics breakdown")).toBeInTheDocument();
-    expect(screen.getByText("Travel — Tre comes to your location")).toBeInTheDocument();
+    expect(screen.getByText("Travel — Clifford Story, III comes to your location")).toBeInTheDocument();
   });
 
   it("renders preferred date input", () => {
@@ -184,7 +184,7 @@ describe("BookPage", () => {
     });
   });
 
-  it('three column "what Tre offers" strip renders', () => {
+  it('three column "what Clifford Story, III offers" strip renders', () => {
     render(<BookPage />);
     expect(screen.getByText("QB DEVELOPMENT")).toBeInTheDocument();
     expect(screen.getByText("WR TRAINING")).toBeInTheDocument();

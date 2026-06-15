@@ -99,7 +99,7 @@ export function AboutSection() {
       <AnimatedImage className="relative w-full">
         <img
           src="/images/tre by himself .jpeg"
-          alt="Tre Story on the field"
+          alt="Clifford Story, III on the field"
           className="w-full object-cover object-top md:object-contain md:bg-black"
           style={{ maxHeight: "400px", height: "auto" }}
         />
@@ -144,11 +144,6 @@ export function AboutSection() {
           </div>
 
           <div>
-            <AnimatedText delay={0}>
-              <span className="font-display text-[#2d8a4e] tracking-widest text-sm">
-                FOUNDER &
-              </span>
-            </AnimatedText>
             <AnimatedText delay={100}>
               <h2
                 className="font-display text-white leading-none mb-8"
@@ -173,7 +168,7 @@ export function AboutSection() {
                   {quoteText}
                 </p>
                 <cite className="font-body text-xs text-gray-600 mt-2 not-italic block">
-                  — Clifford &quot;Tre&quot; Story Jr., Founder
+                  — Clifford Story, III, Founder
                 </cite>
               </div>
             </AnimatedText>

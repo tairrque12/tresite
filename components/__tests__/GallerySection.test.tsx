@@ -17,18 +17,18 @@ describe("GalleryPage", () => {
   it("renders 10 images in gallery", () => {
     render(<GalleryPage />);
     expect(screen.getByAltText("Signal Caller Summit group photo")).toBeInTheDocument();
-    expect(screen.getByAltText("Tre Story coaching on the field")).toBeInTheDocument();
-    expect(screen.getByAltText("Tre Story training with an athlete")).toBeInTheDocument();
-    expect(screen.getByAltText("Tre Story with camp participants")).toBeInTheDocument();
-    expect(screen.getByAltText("Tre Story with family")).toBeInTheDocument();
+    expect(screen.getByAltText("Clifford Story, III coaching on the field")).toBeInTheDocument();
+    expect(screen.getByAltText("Clifford Story, III training with an athlete")).toBeInTheDocument();
+    expect(screen.getByAltText("Clifford Story, III with camp participants")).toBeInTheDocument();
+    expect(screen.getByAltText("Clifford Story, III with family")).toBeInTheDocument();
     const campPhotos = screen.getAllByAltText("Signal Caller Summit camp photo");
     expect(campPhotos.length).toBe(5);
   });
 });
 
 describe("AboutSection", () => {
-  it('renders img with alt "Tre Story on the field"', () => {
+  it('renders img with alt "Clifford Story, III on the field"', () => {
     render(<AboutSection />);
-    expect(screen.getByAltText("Tre Story on the field")).toBeInTheDocument();
+    expect(screen.getByAltText("Clifford Story, III on the field")).toBeInTheDocument();
   });
 });

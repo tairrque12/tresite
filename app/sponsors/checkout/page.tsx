@@ -166,7 +166,7 @@ function PaymentForm({
     setIsProcessing(true);
     setError(null);
 
-    // Send sponsor info to Tre before processing payment
+    // Send sponsor info to Clifford before processing payment
     try {
       await fetch("/api/sponsor-notification", {
         method: "POST",
@@ -277,7 +277,7 @@ function CheckoutContent() {
       }
       setIsLoadingPayment(false);
     } else if (paymentMethod === "cash") {
-      // Send notification to Tre for cash payment
+      // Send notification to Clifford for cash payment
       try {
         await fetch("/api/sponsor-notification", {
           method: "POST",
@@ -422,7 +422,7 @@ function CheckoutContent() {
         <div className="mt-8 border border-[#1e6b3a] p-6 bg-[#1e6b3a]/10">
           <h3 className="font-display text-white text-xl mb-4">INFORMATION SUBMITTED!</h3>
           <p className="font-body text-gray-300 mb-4">
-            Tre has been notified of your sponsorship interest. Reach out to him directly to arrange payment:
+            Clifford Story, III has been notified of your sponsorship interest. Reach out to him directly to arrange payment:
           </p>
           <div className="space-y-3 mb-6">
             <div className="flex items-center gap-3">

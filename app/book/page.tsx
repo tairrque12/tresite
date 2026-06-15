@@ -62,7 +62,7 @@ const skillLevels = [
 const sessionFormats = [
   { value: "in-person", label: "In-Person — Lanett, AL area" },
   { value: "virtual", label: "Virtual — Zoom film review / mechanics breakdown" },
-  { value: "travel", label: "Travel — Tre comes to your location" },
+  { value: "travel", label: "Travel — Clifford Story, III comes to your location" },
 ];
 
 const howHeardOptions = [
@@ -148,7 +148,7 @@ export default function BookPage() {
           </h1>
 
           <p className="font-body text-gray-300 text-base mt-4">
-            Tre will reach out within 24 hours to confirm your session.
+            Clifford Story, III will reach out within 24 hours to confirm your session.
           </p>
 
           <div className="bg-[#111] border border-[#1e6b3a]/30 p-6 mt-6 text-left">
@@ -217,7 +217,7 @@ export default function BookPage() {
 
           <p className="font-body text-gray-400 text-base max-w-lg mt-6">
             Whether you&apos;re an individual athlete, a team, or a school looking to bring
-            elite QB and WR training to your program — Tre is available year-round. Fill
+            elite QB and WR training to your program — Clifford Story, III is available year-round. Fill
             out the form and he&apos;ll reach out within 24 hours.
           </p>
         </div>
@@ -241,7 +241,7 @@ export default function BookPage() {
         </div>
       </section>
 
-      {/* What Tre Offers Strip */}
+      {/* What Clifford Story, III Offers Strip */}
       <section className="bg-[#111] border-y border-[#1e6b3a]/20 py-8 px-8 md:px-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-0">
           <div className="md:border-r md:border-[#1e6b3a]/20 md:pr-6">
@@ -590,7 +590,7 @@ export default function BookPage() {
                 htmlFor="howHeard"
                 className="font-body text-xs text-gray-400 uppercase tracking-widest mb-1 block"
               >
-                How did you hear about Tre? (optional)
+                How did you hear about Clifford Story, III? (optional)
               </label>
               <select
                 id="howHeard"
@@ -650,7 +650,7 @@ export default function BookPage() {
               )}
             </button>
             <p className="font-body text-gray-600 text-xs text-center mt-3">
-              Tre will respond within 24 hours to confirm your session and discuss pricing.
+              Clifford Story, III will respond within 24 hours to confirm your session and discuss pricing.
             </p>
           </div>
         </form>
