@@ -255,8 +255,11 @@ function CheckoutContent() {
     setShowPaymentForm(false);
   };
 
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+
   const handleFormComplete = async (data: SponsorFormData) => {
     setFormData(data);
+    setPaymentError(null);
 
     if (paymentMethod === "card") {
       setIsLoadingPayment(true);
@@ -268,12 +271,20 @@ function CheckoutContent() {
         });
 
         const result = await response.json();
+        if (result.error) {
+          setPaymentError(result.error);
+          setIsLoadingPayment(false);
+          return;
+        }
         if (result.clientSecret) {
           setClientSecret(result.clientSecret);
           setShowPaymentForm(true);
+        } else {
+          setPaymentError("Failed to initialize payment. Please try again.");
         }
       } catch (err) {
         console.error("Failed to create payment intent:", err);
+        setPaymentError("Failed to connect to payment server. Please try again.");
       }
       setIsLoadingPayment(false);
     } else if (paymentMethod === "cash") {
@@ -384,6 +395,13 @@ function CheckoutContent() {
           tier={tier}
           onFormComplete={handleFormComplete}
         />
+      )}
+
+      {/* Error state */}
+      {paymentError && (
+        <div className="mt-8 p-4 bg-red-900/20 border border-red-500/50 text-red-400 font-body text-sm">
+          {paymentError}
+        </div>
       )}
 
       {/* Loading state while creating payment intent */}
