@@ -41,9 +41,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2024-06-20",
-    });
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: tierAmounts[tier],
