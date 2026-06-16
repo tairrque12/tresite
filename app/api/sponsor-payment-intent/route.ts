@@ -18,7 +18,16 @@ const tierNames: Record<string, string> = {
 };
 
 export async function POST(request: Request) {
-  const { tier } = await request.json();
+  console.log("Stripe key exists:", !!process.env.STRIPE_SECRET_KEY);
+  console.log("Key prefix:", process.env.STRIPE_SECRET_KEY?.substring(0, 8));
+
+  let tier: string;
+  try {
+    const body = await request.json();
+    tier = body.tier;
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
 
   if (!tier || !tierAmounts[tier]) {
     return NextResponse.json({ error: "Invalid tier" }, { status: 400 });
@@ -26,14 +35,16 @@ export async function POST(request: Request) {
 
   if (!process.env.STRIPE_SECRET_KEY) {
     return NextResponse.json(
-      { error: "Stripe not configured" },
+      { error: "Stripe not configured - missing STRIPE_SECRET_KEY" },
       { status: 500 }
     );
   }
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2024-06-20",
+    });
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: tierAmounts[tier],
       currency: "usd",
@@ -50,10 +61,15 @@ export async function POST(request: Request) {
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
     });
-  } catch (error) {
-    console.error("PaymentIntent error:", error);
+  } catch (error: unknown) {
+    console.error("Payment intent error:", error);
+    const stripeError = error as { message?: string; type?: string; code?: string };
     return NextResponse.json(
-      { error: "Failed to create payment intent" },
+      {
+        error: stripeError.message || "Failed to create payment intent",
+        type: stripeError.type,
+        code: stripeError.code,
+      },
       { status: 500 }
     );
   }
