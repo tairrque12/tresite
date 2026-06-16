@@ -4,18 +4,7 @@ import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
-import { ArrowLeft, CreditCard, Banknote, Loader2, Phone } from "lucide-react";
-import { loadStripe } from "@stripe/stripe-js";
-import {
-  Elements,
-  PaymentElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
-);
+import { ArrowLeft, CreditCard, Banknote, Loader2, Phone, ExternalLink } from "lucide-react";
 
 interface TierConfig {
   name: string;
@@ -146,89 +135,6 @@ function SponsorForm({
   );
 }
 
-function PaymentForm({
-  tierKey,
-  formData,
-}: {
-  tierKey: string;
-  formData: SponsorFormData;
-}) {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!stripe || !elements) return;
-
-    setIsProcessing(true);
-    setError(null);
-
-    // Send sponsor info to Clifford before processing payment
-    try {
-      await fetch("/api/sponsor-notification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tier: tierKey,
-          paymentMethod: "card",
-          ...formData,
-        }),
-      });
-    } catch (err) {
-      console.error("Failed to send notification:", err);
-    }
-
-    const { error: submitError } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/sponsors/success?tier=${tierKey}`,
-      },
-    });
-
-    if (submitError) {
-      setError(submitError.message || "Payment failed");
-      setIsProcessing(false);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="mt-8">
-      <h3 className="font-display text-white text-xl mb-4">PAYMENT DETAILS</h3>
-      <div className="bg-[#111] border border-[#1e6b3a]/30 p-6">
-        <PaymentElement
-          options={{
-            layout: "tabs",
-          }}
-        />
-      </div>
-
-      {error && (
-        <div className="mt-4 p-4 bg-red-900/20 border border-red-500/50 text-red-400 font-body text-sm">
-          {error}
-        </div>
-      )}
-
-      <button
-        type="submit"
-        disabled={!stripe || isProcessing}
-        className="mt-6 w-full bg-[#1e6b3a] hover:bg-[#2d8a4e] disabled:opacity-50 disabled:cursor-not-allowed text-white font-display tracking-wider py-4 transition-colors flex items-center justify-center gap-2"
-      >
-        {isProcessing ? (
-          <>
-            <Loader2 className="w-5 h-5 animate-spin" />
-            PROCESSING...
-          </>
-        ) : (
-          `PAY NOW`
-        )}
-      </button>
-    </form>
-  );
-}
-
 function CheckoutContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -236,26 +142,25 @@ function CheckoutContent() {
   const tier = tiers[tierKey] || tiers.friend;
 
   const [paymentMethod, setPaymentMethod] = useState<"card" | "cash" | null>(null);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
   const [formData, setFormData] = useState<SponsorFormData | null>(null);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [paymentLinkOpened, setPaymentLinkOpened] = useState(false);
 
   const handleCardSelection = () => {
     setPaymentMethod("card");
-    setClientSecret(null);
     setFormData(null);
     setShowPaymentForm(false);
+    setPaymentLinkOpened(false);
   };
 
   const handleCashSelection = () => {
     setPaymentMethod("cash");
-    setClientSecret(null);
     setFormData(null);
     setShowPaymentForm(false);
+    setPaymentLinkOpened(false);
   };
-
-  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const handleFormComplete = async (data: SponsorFormData) => {
     setFormData(data);
@@ -264,26 +169,35 @@ function CheckoutContent() {
     if (paymentMethod === "card") {
       setIsLoadingPayment(true);
       try {
-        const response = await fetch("/api/sponsor-payment-intent", {
+        // Send sponsor info notification
+        await fetch("/api/sponsor-notification", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tier: tierKey }),
+          body: JSON.stringify({
+            tier: tierKey,
+            paymentMethod: "card",
+            ...data,
+          }),
         });
 
-        const result = await response.json();
-        if (result.error) {
-          setPaymentError(result.error);
+        // Get Stripe Checkout session URL
+        const response = await fetch(`/api/checkout?tier=${tierKey}`);
+
+        if (!response.ok) {
+          const result = await response.json();
+          setPaymentError(result.error || "Failed to create checkout session");
           setIsLoadingPayment(false);
           return;
         }
-        if (result.clientSecret) {
-          setClientSecret(result.clientSecret);
-          setShowPaymentForm(true);
-        } else {
-          setPaymentError("Failed to initialize payment. Please try again.");
-        }
+
+        // The checkout API redirects, so we need to get the URL from the redirect
+        // Instead, open in new tab
+        const checkoutUrl = `/api/checkout?tier=${tierKey}`;
+        window.open(checkoutUrl, "_blank");
+        setPaymentLinkOpened(true);
+        setShowPaymentForm(true);
       } catch (err) {
-        console.error("Failed to create payment intent:", err);
+        console.error("Failed to create checkout session:", err);
         setPaymentError("Failed to connect to payment server. Please try again.");
       }
       setIsLoadingPayment(false);
@@ -304,6 +218,10 @@ function CheckoutContent() {
       }
       setShowPaymentForm(true);
     }
+  };
+
+  const handleOpenPaymentLink = () => {
+    window.open(`/api/checkout?tier=${tierKey}`, "_blank");
   };
 
   return (
@@ -353,8 +271,8 @@ function CheckoutContent() {
           </div>
           <div className="flex-1 text-left">
             <span className="font-display text-white text-xl block">PAY WITH CARD</span>
-            <span className="font-body text-gray-400 text-sm">
-              Card, Apple Pay, Google Pay
+            <span className="font-body text-gray-500 text-xs mt-1 block">
+              Apple Pay, Google Pay, Cash App, and all major cards accepted on checkout
             </span>
           </div>
           {paymentMethod !== "card" && (
@@ -404,35 +322,38 @@ function CheckoutContent() {
         </div>
       )}
 
-      {/* Loading state while creating payment intent */}
+      {/* Loading state while creating checkout session */}
       {paymentMethod === "card" && isLoadingPayment && (
         <div className="mt-8 flex items-center justify-center gap-2 text-gray-400">
           <Loader2 className="w-5 h-5 animate-spin" />
-          <span className="font-body">Loading payment form...</span>
+          <span className="font-body">Opening payment page...</span>
         </div>
       )}
 
-      {/* Card Payment Form */}
-      {paymentMethod === "card" && showPaymentForm && clientSecret && formData && (
-        <Elements
-          stripe={stripePromise}
-          options={{
-            clientSecret,
-            appearance: {
-              theme: "night",
-              variables: {
-                colorPrimary: "#1e6b3a",
-                colorBackground: "#111",
-                colorText: "#ffffff",
-                colorDanger: "#ef4444",
-                fontFamily: "Inter, system-ui, sans-serif",
-                borderRadius: "0px",
-              },
-            },
-          }}
-        >
-          <PaymentForm tierKey={tierKey} formData={formData} />
-        </Elements>
+      {/* Card Payment - Link opened in new tab */}
+      {paymentMethod === "card" && showPaymentForm && paymentLinkOpened && (
+        <div className="mt-8 border border-[#1e6b3a] p-6 bg-[#1e6b3a]/10">
+          <h3 className="font-display text-white text-xl mb-4">PAYMENT PAGE OPENED</h3>
+          <p className="font-body text-gray-300 mb-4">
+            A secure Stripe checkout page has opened in a new tab. Complete your payment there.
+          </p>
+          <p className="font-body text-gray-400 text-sm mb-6">
+            After payment, Stripe will confirm your sponsorship. You can close this page.
+          </p>
+          <button
+            onClick={handleOpenPaymentLink}
+            className="w-full bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display tracking-wider py-4 transition-colors flex items-center justify-center gap-2"
+          >
+            <ExternalLink className="w-5 h-5" />
+            OPEN PAYMENT PAGE AGAIN
+          </button>
+          <button
+            onClick={() => router.push("/sponsors")}
+            className="mt-4 w-full border border-[#1e6b3a]/50 hover:border-[#1e6b3a] text-white font-display tracking-wider py-4 transition-colors"
+          >
+            BACK TO SPONSORS
+          </button>
+        </div>
       )}
 
       {/* Cash Payment Confirmation */}
