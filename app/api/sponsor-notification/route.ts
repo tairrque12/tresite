@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { supabaseAdmin } from "@/lib/supabase";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -25,9 +26,34 @@ interface SponsorData {
   logoNote?: string;
 }
 
+const tierAmounts: Record<string, number> = {
+  platinum: 250,
+  gold: 150,
+  silver: 100,
+  bronze: 50,
+  friend: 25,
+};
+
 export async function POST(request: Request) {
   try {
     const data: SponsorData = await request.json();
+
+    // Insert into Supabase
+    const { error: supabaseError } = await supabaseAdmin
+      .from("sponsors")
+      .insert({
+        business_name: data.businessName || data.contactName || data.name || "Unknown",
+        contact_email: data.email || "",
+        tier: data.tier,
+        amount: tierAmounts[data.tier] || 0,
+        payment_method: data.paymentMethod,
+        payment_status: data.paymentMethod === "card" ? "pending" : "pending",
+        logo_url: null,
+      });
+
+    if (supabaseError) {
+      console.error("Supabase insert error:", supabaseError);
+    }
 
     if (!resend) {
       console.warn("RESEND_API_KEY not configured - skipping email");
