@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Lock } from "lucide-react";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -49,6 +49,13 @@ export function Navbar() {
             className="bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display text-[16px] tracking-wider px-6 py-2 transition-colors"
           >
             REGISTER NOW
+          </Link>
+          <Link
+            href="/admin"
+            className="p-2 text-gray-600 hover:text-[#2d8a4e] transition-colors"
+            title="Admin Portal"
+          >
+            <Lock className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
 
@@ -116,6 +123,14 @@ export function Navbar() {
               onClick={() => setIsMenuOpen(false)}
             >
               REGISTER NOW
+            </Link>
+            <Link
+              href="/admin"
+              className="mt-4 flex items-center gap-2 text-gray-600 hover:text-[#2d8a4e] transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Lock className="w-4 h-4" aria-hidden="true" />
+              <span className="font-display text-[14px] tracking-widest">ADMIN</span>
             </Link>
           </div>
         </div>
