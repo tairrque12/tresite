@@ -58,29 +58,35 @@ export async function POST(request: Request) {
   try {
     const data: BookingData = await request.json();
 
-    // Insert into Supabase
-    const { error: supabaseError } = await supabaseAdmin
-      .from("bookings")
-      .insert({
-        first_name: data.firstName,
-        last_name: data.lastName,
-        email: data.email,
-        phone_number: data.phone,
-        booking_type: data.bookingType,
-        age_range: data.ageRange,
-        skill_level: data.skillLevel,
-        positions: data.positions || [],
-        session_format: data.sessionFormat,
-        preferred_date: data.preferredDate,
-        backup_date: data.backupDate || null,
-        session_goals: data.sessionGoals,
-        how_heard: data.howHeard || null,
-        sms_consent: false,
-        status: "new",
-      });
+    // Insert into Supabase (optional - don't block emails if DB is not configured)
+    if (process.env.SUPABASE_URL) {
+      try {
+        const { error: supabaseError } = await supabaseAdmin
+          .from("bookings")
+          .insert({
+            first_name: data.firstName,
+            last_name: data.lastName,
+            email: data.email,
+            phone_number: data.phone,
+            booking_type: data.bookingType,
+            age_range: data.ageRange,
+            skill_level: data.skillLevel,
+            positions: data.positions || [],
+            session_format: data.sessionFormat,
+            preferred_date: data.preferredDate,
+            backup_date: data.backupDate || null,
+            session_goals: data.sessionGoals,
+            how_heard: data.howHeard || null,
+            sms_consent: false,
+            status: "new",
+          });
 
-    if (supabaseError) {
-      console.error("Supabase insert error:", supabaseError);
+        if (supabaseError) {
+          console.error("Supabase insert error:", supabaseError);
+        }
+      } catch (dbError) {
+        console.error("Supabase connection error:", dbError);
+      }
     }
 
     if (!resend) {

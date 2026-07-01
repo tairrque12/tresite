@@ -43,36 +43,42 @@ export async function POST(request: Request) {
     const data: RegistrationData = await request.json();
     const { athlete, parent, waiver, payment } = data;
 
-    // Insert into Supabase
-    const { error: supabaseError } = await supabaseAdmin
-      .from("registrations")
-      .insert({
-        first_name: athlete.firstName,
-        last_name: athlete.lastName,
-        date_of_birth: athlete.dateOfBirth,
-        position: athlete.position,
-        school_name: athlete.schoolName,
-        grade: athlete.grade,
-        city: athlete.city,
-        state: athlete.state,
-        tshirt_size: athlete.tshirtSize,
-        parent_first_name: parent.parentFirstName,
-        parent_last_name: parent.parentLastName,
-        relationship: parent.relationship,
-        phone_number: parent.phoneNumber,
-        email: parent.email,
-        emergency_contact_name: parent.emergencyContactName || "",
-        emergency_contact_phone: parent.emergencyContactPhone || "",
-        sms_consent: parent.smsConsent,
-        waiver_accepted: waiver.waiverAccepted,
-        waiver_signature: waiver.signature,
-        waiver_signed_at: new Date().toISOString(),
-        payment_method: payment.method,
-        payment_status: payment.status,
-      });
+    // Insert into Supabase (optional - don't block emails if DB is not configured)
+    if (process.env.SUPABASE_URL) {
+      try {
+        const { error: supabaseError } = await supabaseAdmin
+          .from("registrations")
+          .insert({
+            first_name: athlete.firstName,
+            last_name: athlete.lastName,
+            date_of_birth: athlete.dateOfBirth,
+            position: athlete.position,
+            school_name: athlete.schoolName,
+            grade: athlete.grade,
+            city: athlete.city,
+            state: athlete.state,
+            tshirt_size: athlete.tshirtSize,
+            parent_first_name: parent.parentFirstName,
+            parent_last_name: parent.parentLastName,
+            relationship: parent.relationship,
+            phone_number: parent.phoneNumber,
+            email: parent.email,
+            emergency_contact_name: parent.emergencyContactName || "",
+            emergency_contact_phone: parent.emergencyContactPhone || "",
+            sms_consent: parent.smsConsent,
+            waiver_accepted: waiver.waiverAccepted,
+            waiver_signature: waiver.signature,
+            waiver_signed_at: new Date().toISOString(),
+            payment_method: payment.method,
+            payment_status: payment.status,
+          });
 
-    if (supabaseError) {
-      console.error("Supabase insert error:", supabaseError);
+        if (supabaseError) {
+          console.error("Supabase insert error:", supabaseError);
+        }
+      } catch (dbError) {
+        console.error("Supabase connection error:", dbError);
+      }
     }
 
     if (!resend) {

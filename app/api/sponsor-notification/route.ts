@@ -38,21 +38,27 @@ export async function POST(request: Request) {
   try {
     const data: SponsorData = await request.json();
 
-    // Insert into Supabase
-    const { error: supabaseError } = await supabaseAdmin
-      .from("sponsors")
-      .insert({
-        business_name: data.businessName || data.contactName || data.name || "Unknown",
-        contact_email: data.email || "",
-        tier: data.tier,
-        amount: tierAmounts[data.tier] || 0,
-        payment_method: data.paymentMethod,
-        payment_status: data.paymentMethod === "card" ? "pending" : "pending",
-        logo_url: null,
-      });
+    // Insert into Supabase (optional - don't block emails if DB is not configured)
+    if (process.env.SUPABASE_URL) {
+      try {
+        const { error: supabaseError } = await supabaseAdmin
+          .from("sponsors")
+          .insert({
+            business_name: data.businessName || data.contactName || data.name || "Unknown",
+            contact_email: data.email || "",
+            tier: data.tier,
+            amount: tierAmounts[data.tier] || 0,
+            payment_method: data.paymentMethod,
+            payment_status: data.paymentMethod === "card" ? "pending" : "pending",
+            logo_url: null,
+          });
 
-    if (supabaseError) {
-      console.error("Supabase insert error:", supabaseError);
+        if (supabaseError) {
+          console.error("Supabase insert error:", supabaseError);
+        }
+      } catch (dbError) {
+        console.error("Supabase connection error:", dbError);
+      }
     }
 
     if (!resend) {
