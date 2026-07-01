@@ -635,7 +635,7 @@ function PaymentForm({
           disabled={isProcessing || !stripe}
           className="bg-[#1e6b3a] hover:bg-[#2d8a4e] disabled:opacity-50 text-white font-display tracking-wider px-8 py-3 transition-colors"
         >
-          {isProcessing ? "PROCESSING..." : "PAY $50.00 →"}
+          {isProcessing ? "PROCESSING..." : "PAY $25.00 →"}
         </button>
       </div>
     </form>
@@ -686,7 +686,7 @@ function Step4Payment({
         </div>
         <div className="border-t border-[#1e6b3a]/20 pt-3 flex justify-between">
           <span className="font-display text-white tracking-wider">TOTAL</span>
-          <span className="font-display text-2xl text-[#2d8a4e]">$50.00</span>
+          <span className="font-display text-2xl text-[#2d8a4e]">$25.00</span>
         </div>
       </div>
 
@@ -744,7 +744,7 @@ function Step4Payment({
           <div className="bg-[#111] border border-[#1e6b3a]/30 p-4">
             <p className="font-body text-gray-300 text-sm">
               By selecting &quot;Pay in Person,&quot; you agree to pay{" "}
-              <span className="text-[#2d8a4e] font-semibold">$50.00 cash</span>{" "}
+              <span className="text-[#2d8a4e] font-semibold">$25.00 cash</span>{" "}
               at check-in on July 18, 2026. Your registration will be held but
               not confirmed until payment is received.
             </p>
@@ -816,7 +816,7 @@ function SuccessScreen({
         <div className="max-w-md mx-auto space-y-3">
           <p className="font-body text-gray-300">
             Your spot is reserved. Please bring{" "}
-            <span className="text-[#2d8a4e] font-semibold">$50.00 cash</span> to
+            <span className="text-[#2d8a4e] font-semibold">$25.00 cash</span> to
             check-in on July 18th.
           </p>
           <p className="font-body text-gray-500 text-sm">

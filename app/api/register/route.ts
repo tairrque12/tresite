@@ -135,7 +135,7 @@ export async function POST(request: Request) {
             </h3>
             <p style="margin: 0; color: #333;">
               <strong>Method:</strong> ${payment.method === "card" ? "Credit/Debit Card" : "Cash at Check-in"}<br />
-              <strong>Amount:</strong> $50.00
+              <strong>Amount:</strong> $25.00
             </p>
           </div>
         </div>
@@ -180,7 +180,7 @@ export async function POST(request: Request) {
               Payment: ${payment.status === "paid" ? "✅ PAID" : "⏳ Due at Check-in"}
             </h3>
             <p style="margin: 0; color: #333;">
-              <strong>Amount:</strong> $50.00<br />
+              <strong>Amount:</strong> $25.00<br />
               ${payment.method === "cash" ? "<strong>Please bring cash to check-in on July 18th.</strong>" : "Your payment has been processed successfully."}
             </p>
           </div>
@@ -191,7 +191,7 @@ export async function POST(request: Request) {
               <li>Cleats</li>
               <li>Water bottle</li>
               <li>Athletic wear</li>
-              ${payment.method === "cash" ? "<li><strong>$50.00 cash for registration</strong></li>" : ""}
+              ${payment.method === "cash" ? "<li><strong>$25.00 cash for registration</strong></li>" : ""}
             </ul>
           </div>
 
