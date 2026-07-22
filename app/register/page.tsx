@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -952,7 +952,7 @@ function WaitlistForm() {
   );
 }
 
-export default function RegisterPage() {
+function RegisterPageContent() {
   const searchParams = useSearchParams();
   const isWaitlist = searchParams?.get("waitlist") === "true";
 
@@ -1000,17 +1000,17 @@ export default function RegisterPage() {
 
   if (isWaitlist) {
     return (
-      <div className="min-h-screen bg-black">
+      <>
         <Navbar />
         <main className="max-w-lg mx-auto px-6 py-12">
           <WaitlistForm />
         </main>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <>
       <Navbar />
       <RegistrationProgress currentStep={step} />
 
@@ -1052,6 +1052,16 @@ export default function RegisterPage() {
           </>
         )}
       </main>
+    </>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <div className="min-h-screen bg-black">
+      <Suspense fallback={<div className="min-h-screen bg-black"><Navbar /></div>}>
+        <RegisterPageContent />
+      </Suspense>
     </div>
   );
 }
