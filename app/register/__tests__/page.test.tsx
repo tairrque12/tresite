@@ -256,9 +256,9 @@ describe("RegisterPage - Step 4: Payment", () => {
     });
   }
 
-  it('renders order summary with "$50.00"', async () => {
+  it('renders order summary with "$25.00"', async () => {
     await goToStep4();
-    expect(screen.getByText("$50.00")).toBeInTheDocument();
+    expect(screen.getByText("$25.00")).toBeInTheDocument();
   });
 
   it('renders "July 18, 2026" in summary', async () => {
@@ -289,7 +289,7 @@ describe("RegisterPage - Step 4: Payment", () => {
       expect(screen.getByTestId("stripe-card-element")).toBeInTheDocument();
     });
 
-    const payButton = screen.getByRole("button", { name: /pay \$50/i });
+    const payButton = screen.getByRole("button", { name: /pay \$25/i });
     await user.click(payButton);
 
     await waitFor(() => {

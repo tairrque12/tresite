@@ -11,11 +11,9 @@ describe("Navbar", () => {
     ).toBeInTheDocument();
   });
 
-  it('renders "Register Now" button/link', () => {
+  it("renders admin link", () => {
     render(<Navbar />);
-    expect(
-      screen.getByRole("link", { name: /register now/i })
-    ).toBeInTheDocument();
+    expect(screen.getByTitle("Admin Portal")).toBeInTheDocument();
   });
 
   it("renders nav links: About, Sponsors, Gallery", () => {
@@ -25,12 +23,10 @@ describe("Navbar", () => {
     expect(screen.getByRole("link", { name: /gallery/i })).toBeInTheDocument();
   });
 
-  it('"Register Now" has green background styling', () => {
+  it("admin link points to /admin", () => {
     render(<Navbar />);
-    const registerLinks = screen.getAllByRole("link", { name: /register now/i });
-    registerLinks.forEach((link) => {
-      expect(link).toHaveClass("bg-[#1e6b3a]");
-    });
+    const adminLink = screen.getByTitle("Admin Portal");
+    expect(adminLink).toHaveAttribute("href", "/admin");
   });
 
   it('hamburger menu icon renders on mobile (check aria-label="Open menu")', () => {
@@ -67,14 +63,13 @@ describe("Navbar", () => {
     expect(screen.queryByTestId("mobile-menu")).not.toBeInTheDocument();
   });
 
-  it('"Register Now" and "Book Clifford" both appear in the open mobile menu', async () => {
+  it('"Book Clifford" appears in the open mobile menu', async () => {
     const user = userEvent.setup();
     render(<Navbar />);
 
     const hamburger = screen.getByRole("button", { name: "Open menu" });
     await user.click(hamburger);
 
-    expect(screen.getByTestId("mobile-register")).toBeInTheDocument();
     expect(screen.getByTestId("mobile-book")).toBeInTheDocument();
   });
 

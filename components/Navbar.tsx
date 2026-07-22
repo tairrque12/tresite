@@ -45,12 +45,6 @@ export function Navbar() {
             GALLERY
           </Link>
           <Link
-            href="/register"
-            className="bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display text-[16px] tracking-wider px-6 py-2 transition-colors"
-          >
-            REGISTER NOW
-          </Link>
-          <Link
             href="/admin"
             className="p-2 text-gray-600 hover:text-[#2d8a4e] transition-colors"
             title="Admin Portal"
@@ -115,14 +109,6 @@ export function Navbar() {
               onClick={() => setIsMenuOpen(false)}
             >
               BOOK CLIFFORD
-            </Link>
-            <Link
-              href="/register"
-              data-testid="mobile-register"
-              className="mt-8 bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display text-[24px] tracking-wider px-12 py-4 transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              REGISTER NOW
             </Link>
             <Link
               href="/admin"

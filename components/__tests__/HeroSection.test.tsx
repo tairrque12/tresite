@@ -12,10 +12,10 @@ describe("HeroSection", () => {
     vi.useRealTimers();
   });
 
-  it("renders background image with role img", () => {
+  it("renders background image", () => {
     render(<HeroSection />);
     expect(
-      screen.getByRole("img", { name: /group photo background/i })
+      screen.getByAltText(/group photo background/i)
     ).toBeInTheDocument();
   });
 
@@ -27,28 +27,27 @@ describe("HeroSection", () => {
     expect(screen.getByText("SUMMIT")).toBeInTheDocument();
   });
 
-  it("renders countdown timer element", () => {
+  it("renders next summit CTA with waitlist link", () => {
     render(<HeroSection />);
-    expect(screen.getByTestId("countdown-timer")).toBeInTheDocument();
-    expect(screen.getByText("DAYS")).toBeInTheDocument();
-    expect(screen.getByText("HRS")).toBeInTheDocument();
-    expect(screen.getByText("MIN")).toBeInTheDocument();
-    expect(screen.getByText("SEC")).toBeInTheDocument();
+    expect(screen.getByTestId("next-summit-cta")).toBeInTheDocument();
+    expect(screen.getByText("SIGNAL CALLER SUMMIT 2026 COMPLETE")).toBeInTheDocument();
+    expect(screen.getByText(/be the first to know/i)).toBeInTheDocument();
+    const waitlistLinks = screen.getAllByRole("link", { name: /join waitlist/i });
+    expect(waitlistLinks.length).toBeGreaterThan(0);
+    expect(waitlistLinks[0]).toHaveAttribute("href", "/register?waitlist=true");
   });
 
-  it("renders info strip with date, time, and location", () => {
+  it("renders info strip with waitlist message", () => {
     render(<HeroSection />);
     expect(screen.getByTestId("info-strip")).toBeInTheDocument();
-    expect(screen.getByText("JULY 18, 2026")).toBeInTheDocument();
-    expect(screen.getByText("10:00 AM EST")).toBeInTheDocument();
-    expect(screen.getByText("LANETT, AL")).toBeInTheDocument();
+    expect(screen.getByText("BE FIRST TO KNOW ABOUT THE NEXT SUMMIT")).toBeInTheDocument();
   });
 
-  it('renders "Register Now" CTA with href="/register"', () => {
+  it('renders "Join Waitlist" CTA with href="/register?waitlist=true"', () => {
     render(<HeroSection />);
-    const registerButtons = screen.getAllByRole("link", { name: /register now/i });
-    expect(registerButtons.length).toBeGreaterThan(0);
-    expect(registerButtons[0]).toHaveAttribute("href", "/register");
+    const waitlistButtons = screen.getAllByRole("link", { name: /join waitlist/i });
+    expect(waitlistButtons.length).toBeGreaterThan(0);
+    expect(waitlistButtons[0]).toHaveAttribute("href", "/register?waitlist=true");
   });
 
   it("renders Sweet Feet Academy partner text", () => {

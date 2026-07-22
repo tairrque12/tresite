@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -48,9 +49,16 @@ const waiverSchema = z.object({
   signature: z.string().min(1, "Signature is required"),
 });
 
+const waitlistSchema = z.object({
+  name: z.string().optional(),
+  email: z.string().email("Valid email is required"),
+  phone: z.string().optional(),
+});
+
 type AthleteData = z.infer<typeof athleteSchema>;
 type ParentData = z.infer<typeof parentSchema>;
 type WaiverData = z.infer<typeof waiverSchema>;
+type WaitlistData = z.infer<typeof waitlistSchema>;
 
 interface FormData {
   athlete: AthleteData;
@@ -828,7 +836,126 @@ function SuccessScreen({
   );
 }
 
+function WaitlistForm() {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<WaitlistData>({
+    resolver: zodResolver(waitlistSchema),
+  });
+
+  const onSubmit = async (data: WaitlistData) => {
+    setIsSubmitting(true);
+    try {
+      await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      setIsSubmitted(true);
+      confetti({
+        particleCount: 60,
+        spread: 50,
+        origin: { y: 0.6 },
+        colors: ["#1e6b3a", "#2d8a4e", "#ffffff"],
+      });
+    } catch (error) {
+      console.error("Failed to submit waitlist:", error);
+    }
+    setIsSubmitting(false);
+  };
+
+  if (isSubmitted) {
+    return (
+      <div className="text-center py-12 space-y-6">
+        <div className="w-20 h-20 bg-[#1e6b3a] rounded-full flex items-center justify-center mx-auto">
+          <Check className="w-10 h-10 text-white" />
+        </div>
+        <h1 className="font-display text-4xl text-white">YOU&apos;RE ON THE LIST!</h1>
+        <p className="font-body text-gray-300 max-w-md mx-auto">
+          We&apos;ll notify you first when registration opens for the next Signal Caller Summit.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div>
+        <span className="font-display text-[#2d8a4e] text-xs tracking-widest">
+          SIGNAL CALLER SUMMIT 2026 COMPLETE
+        </span>
+        <h1 className="font-display text-4xl text-white mt-1">
+          JOIN THE WAITLIST
+        </h1>
+        <p className="font-body text-gray-400 mt-3">
+          Be the first to know when registration opens for the next summit.
+        </p>
+      </div>
+
+      <div>
+        <label htmlFor="waitlist-name" className={labelStyles}>
+          Name (optional)
+        </label>
+        <input
+          id="waitlist-name"
+          type="text"
+          placeholder="Your name"
+          {...register("name")}
+          className={inputStyles}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="waitlist-email" className={labelStyles}>
+          Email
+        </label>
+        <input
+          id="waitlist-email"
+          type="email"
+          placeholder="your@email.com"
+          {...register("email")}
+          className={inputStyles}
+        />
+        {errors.email && <p className={errorStyles}>{errors.email.message}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="waitlist-phone" className={labelStyles}>
+          Phone (optional)
+        </label>
+        <input
+          id="waitlist-phone"
+          type="tel"
+          placeholder="xxx-xxx-xxxx"
+          {...register("phone")}
+          className={inputStyles}
+        />
+        <p className="font-body text-xs text-gray-600 mt-1">
+          For SMS updates about the next camp
+        </p>
+      </div>
+
+      <div className="pt-4">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-[#1e6b3a] hover:bg-[#2d8a4e] disabled:opacity-50 text-white font-display tracking-wider px-8 py-3 transition-colors"
+        >
+          {isSubmitting ? "JOINING..." : "NOTIFY ME →"}
+        </button>
+      </div>
+    </form>
+  );
+}
+
 export default function RegisterPage() {
+  const searchParams = useSearchParams();
+  const isWaitlist = searchParams?.get("waitlist") === "true";
+
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<Partial<FormData>>({});
   const [isSuccess, setIsSuccess] = useState(false);
@@ -870,6 +997,17 @@ export default function RegisterPage() {
 
     setIsSuccess(true);
   };
+
+  if (isWaitlist) {
+    return (
+      <div className="min-h-screen bg-black">
+        <Navbar />
+        <main className="max-w-lg mx-auto px-6 py-12">
+          <WaitlistForm />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black">

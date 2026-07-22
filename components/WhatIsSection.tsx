@@ -112,10 +112,10 @@ export function WhatIsSection() {
             </AnimatedText>
             <AnimatedText delay={300}>
               <Link
-                href="/register"
+                href="/register?waitlist=true"
                 className="inline-block bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display tracking-wider px-8 py-4 transition-colors w-fit"
               >
-                REGISTER NOW →
+                JOIN WAITLIST →
               </Link>
             </AnimatedText>
           </div>
