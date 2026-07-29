@@ -1,32 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 
-function useReveal() {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  return { ref, isVisible };
-}
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
 
 interface AnimatedTextProps {
   children: React.ReactNode;
@@ -35,20 +15,21 @@ interface AnimatedTextProps {
 }
 
 function AnimatedText({ children, delay, className = "" }: AnimatedTextProps) {
-  const { ref, isVisible } = useReveal();
-
   return (
-    <div
-      ref={ref}
-      className={`transition-all duration-[800ms] ${className}`}
-      style={{
-        clipPath: isVisible ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
-        transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-        transitionDelay: `${delay}ms`,
+    <motion.div
+      className={className}
+      variants={fadeInUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{
+        duration: 0.6,
+        delay: delay / 1000,
+        ease: [0.16, 1, 0.3, 1],
       }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
 
