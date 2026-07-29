@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 
 function useClipReveal() {
@@ -64,12 +65,18 @@ function NextSummitCTA() {
           Be the first to know about the next summit
         </span>
       </div>
-      <Link
-        href="/register?waitlist=true"
-        className="border border-white/30 text-white font-display tracking-wider px-5 py-2.5 hover:bg-white/10 transition-colors text-sm whitespace-nowrap"
+      <motion.div
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
-        JOIN WAITLIST →
-      </Link>
+        <Link
+          href="/register?waitlist=true"
+          className="border border-white/30 text-white font-display tracking-wider px-5 py-2.5 hover:bg-white/10 transition-colors text-sm whitespace-nowrap inline-block"
+        >
+          JOIN WAITLIST →
+        </Link>
+      </motion.div>
     </div>
   );
 }
@@ -142,12 +149,18 @@ export function HeroSection() {
             <span className="font-display text-white tracking-widest text-sm">
               BE FIRST TO KNOW ABOUT THE NEXT SUMMIT
             </span>
-            <Link
-              href="/register?waitlist=true"
-              className="bg-white text-black font-display tracking-wider px-6 py-3 hover:bg-gray-200 transition-colors text-center"
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              JOIN WAITLIST →
-            </Link>
+              <Link
+                href="/register?waitlist=true"
+                className="bg-white text-black font-display tracking-wider px-6 py-3 hover:bg-gray-200 transition-colors text-center inline-block"
+              >
+                JOIN WAITLIST →
+              </Link>
+            </motion.div>
           </div>
         </div>
       </div>

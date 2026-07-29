@@ -92,12 +92,19 @@ export function WhatIsSection() {
               </p>
             </AnimatedText>
             <AnimatedText delay={300}>
-              <Link
-                href="/register?waitlist=true"
-                className="inline-block bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display tracking-wider px-8 py-4 transition-colors w-fit"
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                className="w-fit"
               >
-                JOIN WAITLIST →
-              </Link>
+                <Link
+                  href="/register?waitlist=true"
+                  className="inline-block bg-[#1e6b3a] hover:bg-[#2d8a4e] text-white font-display tracking-wider px-8 py-4 transition-colors"
+                >
+                  JOIN WAITLIST →
+                </Link>
+              </motion.div>
             </AnimatedText>
           </div>
         </div>
