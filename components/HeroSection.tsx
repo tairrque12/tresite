@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 
 function useClipReveal() {
@@ -82,17 +82,27 @@ function NextSummitCTA() {
 }
 
 export function HeroSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+
   return (
-    <section className="relative min-h-screen bg-black">
-      <Image
-        src="/images/group-pic.jpeg"
-        alt="Group photo background"
-        fill
-        priority
-        quality={75}
-        sizes="100vw"
-        className="object-cover object-[center_top] md:object-center"
-      />
+    <section ref={sectionRef} className="relative min-h-screen bg-black overflow-hidden">
+      <motion.div className="absolute inset-0" style={{ y, scale }}>
+        <Image
+          src="/images/group-pic.jpeg"
+          alt="Group photo background"
+          fill
+          priority
+          quality={75}
+          sizes="100vw"
+          className="object-cover object-[center_top] md:object-center"
+        />
+      </motion.div>
       <div className="absolute inset-0 z-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
       <div className="absolute inset-0 grain pointer-events-none" />
 
