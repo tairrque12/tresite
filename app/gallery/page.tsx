@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Navbar } from "@/components/Navbar";
 
 const photos = [
@@ -71,11 +72,13 @@ function GalleryImage({
   alt,
   span,
   isHero,
+  index,
 }: {
   src: string;
   alt: string;
   span: string;
   isHero: boolean;
+  index: number;
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -87,15 +90,19 @@ function GalleryImage({
 
   return (
     <div
-      className={`relative overflow-hidden ${span}`}
+      className={`relative overflow-hidden ${span} ${heightClass}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <img
+      <Image
         src={src}
         alt={alt}
-        className={`w-full ${heightClass} object-cover ${objectPosition} transition-transform duration-300`}
+        fill
+        sizes={isHero ? "100vw" : "(max-width: 768px) 50vw, 33vw"}
+        className={`object-cover ${objectPosition} transition-transform duration-300`}
         style={{ transform: isHovered ? "scale(1.02)" : "scale(1)" }}
+        loading={index === 0 ? "eager" : "lazy"}
+        priority={index === 0}
       />
       <div
         className="absolute inset-0 bg-[#1e6b3a]/20 transition-opacity duration-300"
@@ -179,13 +186,14 @@ export default function GalleryPage() {
         </span>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-          {photos.map((photo) => (
+          {photos.map((photo, index) => (
             <GalleryImage
               key={photo.src}
               src={photo.src}
               alt={photo.alt}
               span={photo.span}
               isHero={photo.isHero}
+              index={index}
             />
           ))}
         </div>

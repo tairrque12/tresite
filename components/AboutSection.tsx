@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 const fadeInUp = {
@@ -82,12 +83,14 @@ const quoteText = `I take pride in being someone these kids can reach out to —
 export function AboutSection() {
   return (
     <section id="about" className="bg-black">
-      <AnimatedImage className="relative w-full">
-        <img
+      <AnimatedImage className="relative w-full h-[400px]">
+        <Image
           src="/images/tre by himself .jpeg"
           alt="Clifford Story, III on the field"
-          className="w-full object-cover object-top md:object-contain md:bg-black"
-          style={{ maxHeight: "400px", height: "auto" }}
+          fill
+          sizes="100vw"
+          className="object-cover object-top md:object-contain md:bg-black"
+          priority={false}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black" />
       </AnimatedImage>

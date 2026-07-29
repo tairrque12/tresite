@@ -13,7 +13,7 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        display: ["Bebas Neue", "sans-serif"],
+        display: ["var(--font-bebas-neue)", "Bebas Neue", "sans-serif"],
         body: ["Inter", "sans-serif"],
       },
     },
