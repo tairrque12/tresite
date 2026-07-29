@@ -270,51 +270,55 @@ export function HeroSection() {
       <div className="absolute inset-0 z-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
       <div className="absolute inset-0 grain pointer-events-none" />
 
-      <div className="relative z-10 min-h-screen flex flex-col justify-center pl-8 md:pl-16 pr-4 pt-20 pb-48">
-        <AnimatedText delay={0}>
-          <span
-            className="block font-display leading-none tracking-tight text-white"
-            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
-          >
-            STORY&apos;S
-          </span>
-        </AnimatedText>
-        <AnimatedText delay={100}>
-          <span
-            className="block font-display leading-none tracking-tight text-[#1e6b3a]"
-            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
-          >
-            SIGNAL
-          </span>
-        </AnimatedText>
-        <AnimatedText delay={200}>
-          <span
-            className="block font-display leading-none tracking-tight text-white"
-            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
-          >
-            CALLER
-          </span>
-        </AnimatedText>
-        <AnimatedText delay={300}>
-          <span
-            className="block font-display leading-none tracking-tight text-stroke"
-            style={{ fontSize: "clamp(72px, 14vw, 160px)" }}
-          >
-            SUMMIT
-          </span>
-        </AnimatedText>
-      </div>
+      <div className="relative z-10 min-h-screen flex flex-col pl-8 md:pl-16 pr-4 pt-20">
+        {/* Headline section - centered vertically with flex-grow */}
+        <div className="flex-1 flex flex-col justify-center">
+          <AnimatedText delay={0}>
+            <span
+              className="block font-display leading-none tracking-tight text-white"
+              style={{ fontSize: "clamp(48px, 12vw, 160px)" }}
+            >
+              STORY&apos;S
+            </span>
+          </AnimatedText>
+          <AnimatedText delay={100}>
+            <span
+              className="block font-display leading-none tracking-tight text-[#1e6b3a]"
+              style={{ fontSize: "clamp(48px, 12vw, 160px)" }}
+            >
+              SIGNAL
+            </span>
+          </AnimatedText>
+          <AnimatedText delay={200}>
+            <span
+              className="block font-display leading-none tracking-tight text-white"
+              style={{ fontSize: "clamp(48px, 12vw, 160px)" }}
+            >
+              CALLER
+            </span>
+          </AnimatedText>
+          <AnimatedText delay={300}>
+            <span
+              className="block font-display leading-none tracking-tight text-stroke"
+              style={{ fontSize: "clamp(48px, 12vw, 160px)" }}
+            >
+              SUMMIT
+            </span>
+          </AnimatedText>
+        </div>
 
-      <div className="absolute bottom-0 left-0 right-0 z-10">
-        <div className="px-8 md:px-16 pb-4">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        {/* CTA section - fixed at bottom with space for InfoStrip */}
+        <div className="pb-20 md:pb-24">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-6">
             <NextSummitCTA audience={audience} onSelectAudience={selectAudience} />
             <span className="font-display text-xs tracking-widest text-gray-500">
               PARTNERED WITH SWEET FEET ACADEMY
             </span>
           </div>
         </div>
+      </div>
 
+      <div className="absolute bottom-0 left-0 right-0 z-20">
         <InfoStrip audience={audience} />
       </div>
     </section>
