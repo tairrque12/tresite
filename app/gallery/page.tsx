@@ -105,12 +105,69 @@ function GalleryImage({
   );
 }
 
+const photoAlbums2026 = [
+  {
+    name: "Google Drive Photos",
+    url: "https://drive.google.com/drive/folders/1mQw6ur_gbYbTlh-sR7KpL7JY7n-PKuwy",
+  },
+  {
+    name: "Captured by Cecii",
+    url: "https://capturedbycecii.pixieset.com/storyssignalcallersummit/#",
+  },
+  {
+    name: "Visions by Swint",
+    url: "https://visionsbyswint10.pixieset.com/storysignalcallersummit/",
+  },
+];
+
 export default function GalleryPage() {
   return (
     <div className="min-h-screen bg-black">
       <Navbar />
 
-      <section className="pt-14 py-16 px-6 md:px-16">
+      {/* 2026 Photo Albums Section */}
+      <section className="pt-14 py-16 px-6 md:px-16 border-b border-white/10">
+        <h1
+          className="font-display text-white mb-2"
+          style={{ fontSize: "clamp(48px, 8vw, 96px)" }}
+        >
+          STORY'S SUMMIT CAMP
+        </h1>
+        <span className="font-display text-[#2d8a4e] tracking-widest text-sm block mb-8">
+          2026 PHOTO ALBUMS
+        </span>
+
+        <div className="flex flex-wrap gap-4">
+          {photoAlbums2026.map((album) => (
+            <a
+              key={album.name}
+              href={album.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#2d8a4e] hover:bg-[#1e6b3a] text-white font-display tracking-wider px-6 py-3 transition-colors duration-200"
+            >
+              {album.name}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* 2025 Gallery Section */}
+      <section className="py-16 px-6 md:px-16">
         <h1
           className="font-display text-white mb-2"
           style={{ fontSize: "clamp(48px, 8vw, 96px)" }}
