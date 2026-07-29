@@ -131,7 +131,7 @@ export default function GalleryPage() {
           className="font-display text-white mb-2"
           style={{ fontSize: "clamp(48px, 8vw, 96px)" }}
         >
-          STORY'S SUMMIT CAMP
+          STORY&apos;S SUMMIT CAMP
         </h1>
         <span className="font-display text-[#2d8a4e] tracking-widest text-sm block mb-8">
           2026 PHOTO ALBUMS
